@@ -8,367 +8,28 @@
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     
     <link rel="stylesheet" href="css/style.css">
-    
-    <style>
-        /* Additional Admin Styles */
-        .admin-login-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: var(--bg-dark);
-        }
-        
-        .admin-login-card {
-            background: var(--bg-card-dark);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: var(--radius-lg);
-            padding: 2rem;
-            width: 100%;
-            max-width: 400px;
-        }
-        
-        .admin-login-card h2 {
-            text-align: center;
-            margin-bottom: 2rem;
-            color: var(--primary-neon);
-        }
-        
-        .admin-layout {
-            display: flex;
-            min-height: 100vh;
-        }
-        
-        .admin-sidebar {
-            width: 250px;
-            background: rgba(10, 14, 39, 0.95);
-            backdrop-filter: blur(20px);
-            border-right: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 1.5rem;
-            position: fixed;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            overflow-y: auto;
-            z-index: 100;
-        }
-        
-        .admin-sidebar-header {
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .admin-sidebar-header h2 {
-            font-size: 1.2rem;
-            color: var(--primary-neon);
-            margin-bottom: 0.25rem;
-        }
-        
-        .admin-sidebar-header p {
-            color: var(--text-gray);
-            font-size: 0.8rem;
-        }
-        
-        .admin-menu {
-            list-style: none;
-            padding: 0;
-        }
-        
-        .admin-menu li {
-            margin-bottom: 0.5rem;
-        }
-        
-        .admin-menu a {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem 1rem;
-            color: var(--text-gray);
-            text-decoration: none;
-            border-radius: var(--radius-md);
-            transition: all var(--transition-normal);
-            cursor: pointer;
-        }
-        
-        .admin-menu a:hover,
-        .admin-menu a.active {
-            background: rgba(0, 240, 255, 0.1);
-            color: var(--primary-neon);
-        }
-        
-        .admin-main {
-            flex: 1;
-            margin-left: 250px;
-            padding: 2rem;
-            background: var(--bg-dark);
-            min-height: 100vh;
-        }
-        
-        .admin-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        
-        .admin-stat-card {
-            background: var(--bg-card-dark);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: var(--radius-lg);
-            padding: 1.5rem;
-            transition: all var(--transition-normal);
-        }
-        
-        .admin-stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-neon);
-        }
-        
-        .admin-stat-value {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--primary-neon);
-            margin-bottom: 0.5rem;
-        }
-        
-        .admin-stat-label {
-            color: var(--text-gray);
-            font-size: 0.9rem;
-        }
-        
-        .admin-table-container {
-            background: var(--bg-card-dark);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: var(--radius-lg);
-            overflow: hidden;
-        }
-        
-        .admin-table-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-        
-        .table-filters {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-        
-        .filter-input,
-        .filter-select {
-            padding: 0.5rem 1rem;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: var(--radius-sm);
-            color: var(--text-light);
-            font-family: 'Poppins', sans-serif;
-            font-size: 0.9rem;
-        }
-        
-        .filter-input::placeholder {
-            color: var(--text-gray);
-        }
-        
-        .filter-select option {
-            background: var(--bg-dark);
-            color: var(--text-light);
-        }
-        
-        .table-wrapper {
-            overflow-x: auto;
-        }
-        
-        .admin-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        
-        .admin-table th {
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-light);
-            font-weight: 600;
-            font-size: 0.85rem;
-            padding: 1rem;
-            text-align: left;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            white-space: nowrap;
-        }
-        
-        .admin-table td {
-            padding: 0.75rem 1rem;
-            text-align: left;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            color: var(--text-gray);
-            font-size: 0.85rem;
-        }
-        
-        .admin-table tr:hover td {
-            background: rgba(255, 255, 255, 0.02);
-        }
-        
-        .action-buttons {
-            display: flex;
-            gap: 0.5rem;
-        }
-        
-        .btn-sm {
-            padding: 0.4rem 0.8rem;
-            font-size: 0.8rem;
-            border: none;
-            border-radius: var(--radius-sm);
-            cursor: pointer;
-            transition: all var(--transition-fast);
-            color: white;
-            font-family: 'Poppins', sans-serif;
-        }
-        
-        .btn-verify {
-            background: var(--success);
-        }
-        
-        .btn-verify:hover {
-            background: #059669;
-        }
-        
-        .btn-delete {
-            background: var(--danger);
-        }
-        
-        .btn-delete:hover {
-            background: #dc2626;
-        }
-        
-        .btn-export {
-            background: var(--info);
-            padding: 0.5rem 1rem;
-            border: none;
-            border-radius: var(--radius-sm);
-            color: white;
-            cursor: pointer;
-            font-family: 'Poppins', sans-serif;
-            font-size: 0.9rem;
-            transition: all var(--transition-fast);
-        }
-        
-        .btn-export:hover {
-            background: #2563eb;
-        }
-        
-        .btn-logout {
-            background: rgba(239, 68, 68, 0.2);
-            color: var(--danger);
-            padding: 0.5rem 1rem;
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            border-radius: var(--radius-sm);
-            cursor: pointer;
-            font-family: 'Poppins', sans-serif;
-            font-size: 0.9rem;
-            transition: all var(--transition-fast);
-            margin-top: auto;
-        }
-        
-        .btn-logout:hover {
-            background: rgba(239, 68, 68, 0.3);
-        }
-        
-        .user-info {
-            color: var(--text-light);
-            font-size: 0.85rem;
-            padding: 0.5rem 0;
-            margin-top: 1rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .charts-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-        
-        .chart-card {
-            background: var(--bg-card-dark);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: var(--radius-lg);
-            padding: 1.5rem;
-        }
-        
-        .chart-card h3 {
-            color: var(--text-light);
-            margin-bottom: 1rem;
-            font-size: 1.1rem;
-        }
-        
-        canvas {
-            width: 100% !important;
-            height: 300px !important;
-        }
-        
-        @media (max-width: 768px) {
-            .admin-sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
-            }
-            
-            .admin-main {
-                margin-left: 0;
-            }
-            
-            .admin-layout {
-                flex-direction: column;
-            }
-            
-            .charts-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .table-filters {
-                flex-direction: column;
-                width: 100%;
-            }
-            
-            .filter-input,
-            .filter-select {
-                width: 100%;
-            }
-        }
-    </style>
 </head>
 <body>
     <!-- Login Form -->
-    <div id="loginForm" class="admin-login-container">
-        <div class="admin-login-card">
-            <h2>🔐 Admin Login</h2>
+    <div id="loginForm" style="display: flex; justify-content: center; align-items: center; min-height: 100vh; background: var(--bg-dark);">
+        <div class="glass-card" style="width: 100%; max-width: 400px;">
+            <h2 style="text-align: center; margin-bottom: 2rem; color: var(--primary-neon);">🔐 Admin Login</h2>
+            
+            <!-- Password Only Login -->
             <form id="adminLoginForm">
                 <div class="form-group">
-                    <label class="form-label">Email</label>
-                    <input type="email" id="adminEmail" class="form-control" placeholder="admin@smkti.sch.id" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Password</label>
-                    <input type="password" id="adminPassword" class="form-control" placeholder="Masukkan password" required>
+                    <label class="form-label">Password Admin</label>
+                    <input type="password" id="adminPassword" class="form-control" placeholder="Masukkan password admin" required>
                 </div>
                 <button type="submit" class="btn btn-primary" style="width: 100%;">
-                    🔓 Login
+                    🔓 Masuk ke Dashboard
                 </button>
             </form>
+            
             <p style="text-align: center; margin-top: 1rem; color: var(--text-gray); font-size: 0.85rem;">
-                Default: admin@smkti.sch.id / admin123
+                Password default: <strong style="color: var(--primary-neon);">admin123</strong>
             </p>
         </div>
     </div>
@@ -377,31 +38,26 @@
     <div id="adminContent" style="display: none;">
         <div class="admin-layout">
             <!-- Sidebar -->
-            <aside class="admin-sidebar">
+            <aside class="admin-sidebar" id="adminSidebar">
                 <div class="admin-sidebar-header">
                     <h2>📊 Admin Panel</h2>
-                    <p>SMK TI Bali Global</p>
+                    <p style="color: var(--text-gray); font-size: 0.85rem;">SMK TI Bali Global</p>
                 </div>
                 <ul class="admin-menu">
-                    <li><a href="#" class="active" onclick="scrollToSection('dashboard')">📈 Dashboard</a></li>
-                    <li><a href="#" onclick="scrollToSection('dataSiswa')">👥 Data Siswa</a></li>
-                    <li><a href="#" onclick="scrollToSection('statistik')">📊 Statistik</a></li>
+                    <li><a href="#dashboard" class="active" onclick="showSection('dashboard')">📈 Dashboard</a></li>
+                    <li><a href="#siswa" onclick="showSection('siswa')">👥 Data Siswa</a></li>
+                    <li><a href="#statistik" onclick="showSection('statistik')">📊 Statistik</a></li>
+                    <li><a href="#" onclick="handleLogout()" style="color: #EF4444;">🚪 Logout</a></li>
                 </ul>
-                <div class="user-info">
-                    <p>👤 <span id="adminEmailDisplay">-</span></p>
-                </div>
-                <button id="logoutBtn" class="btn-logout" style="width: 100%; margin-top: 1rem;">
-                    🚪 Logout
-                </button>
             </aside>
 
             <!-- Main Content -->
             <main class="admin-main">
                 <!-- Dashboard Section -->
-                <div id="dashboard">
-                    <h1 style="margin-bottom: 2rem; color: var(--text-light);">Dashboard Admin</h1>
-                    
-                    <!-- Stats Cards -->
+                <div id="dashboard-section">
+                    <h1 style="margin-bottom: 2rem;">Dashboard Admin</h1>
+
+                    <!-- Statistics Cards -->
                     <div class="admin-stats">
                         <div class="admin-stat-card">
                             <div class="admin-stat-value" id="totalSiswa">0</div>
@@ -423,30 +79,41 @@
                             <div class="admin-stat-label">Verified / Pending</div>
                         </div>
                     </div>
-                    
+
                     <!-- Charts -->
                     <div class="charts-grid">
                         <div class="chart-card">
-                            <h3>📊 Statistik Jurusan</h3>
-                            <canvas id="jurusanChart"></canvas>
+                            <h3>Statistik Jurusan</h3>
+                            <div class="chart-container">
+                                <canvas id="jurusanChart" width="400" height="300"></canvas>
+                            </div>
                         </div>
                         <div class="chart-card">
-                            <h3>🎯 Statistik Ekskul</h3>
-                            <canvas id="ekskulChart"></canvas>
+                            <h3>Statistik Ekskul</h3>
+                            <div class="chart-container">
+                                <canvas id="ekskulChart" width="400" height="300"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chart-card" style="margin-bottom: 2rem;">
+                        <h3>Grafik Pendaftaran</h3>
+                        <div class="chart-container">
+                            <canvas id="registrationChart" width="800" height="300"></canvas>
                         </div>
                     </div>
                 </div>
 
                 <!-- Data Siswa Section -->
-                <div id="dataSiswa" style="margin-top: 3rem;">
-                    <h2 style="margin-bottom: 1.5rem; color: var(--text-light);">👥 Data Siswa</h2>
+                <div id="siswa-section" style="display: none;">
+                    <h1 style="margin-bottom: 2rem;">Data Siswa</h1>
                     
                     <div class="admin-table-container">
                         <div class="admin-table-header">
-                            <h3 style="color: var(--text-light);">Daftar Pendaftar</h3>
+                            <h3>Daftar Pendaftar</h3>
                             <div class="table-filters">
-                                <input type="text" id="searchSiswa" class="filter-input" placeholder="🔍 Cari nama/NISN...">
-                                <select id="filterJurusan" class="filter-select">
+                                <input type="text" id="searchSiswa" class="filter-select" placeholder="Cari siswa..." oninput="filterSiswa()">
+                                <select id="filterJurusan" class="filter-select" onchange="filterSiswa()">
                                     <option value="">Semua Jurusan</option>
                                     <option value="Rekayasa Perangkat Lunak (RPL)">RPL</option>
                                     <option value="Teknik Komputer dan Jaringan (TKJ)">TKJ</option>
@@ -454,7 +121,23 @@
                                     <option value="Akuntansi dan Keuangan Lembaga (AKL)">AKL</option>
                                     <option value="Perhotelan">Perhotelan</option>
                                 </select>
-                                <button id="exportExcel" class="btn-export">📥 Export Excel</button>
+                                <select id="filterEkskul" class="filter-select" onchange="filterSiswa()">
+                                    <option value="">Semua Ekskul</option>
+                                    <option value="OSIS">OSIS</option>
+                                    <option value="Pramuka">Pramuka</option>
+                                    <option value="PMR">PMR</option>
+                                    <option value="Basket">Basket</option>
+                                    <option value="Futsal">Futsal</option>
+                                    <option value="Voli">Voli</option>
+                                    <option value="Tari Bali">Tari Bali</option>
+                                    <option value="Musik">Musik</option>
+                                    <option value="Coding Club">Coding Club</option>
+                                    <option value="Robotik">Robotik</option>
+                                    <option value="Multimedia Creative">Multimedia Creative</option>
+                                    <option value="English Club">English Club</option>
+                                    <option value="E-Sport">E-Sport</option>
+                                </select>
+                                <button id="exportExcel" class="btn btn-success btn-sm" onclick="exportToExcel()">📥 Export Excel</button>
                             </div>
                         </div>
                         <div class="table-wrapper">
@@ -466,17 +149,18 @@
                                         <th>NISN</th>
                                         <th>Asal Sekolah</th>
                                         <th>WhatsApp</th>
+                                        <th>Email</th>
                                         <th>Jurusan 1</th>
                                         <th>Jurusan 2</th>
                                         <th>Ekskul</th>
                                         <th>Status</th>
-                                        <th>Tanggal</th>
+                                        <th>Tanggal Daftar</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody id="siswaTableBody">
                                     <tr>
-                                        <td colspan="11" style="text-align: center;">Memuat data...</td>
+                                        <td colspan="12" style="text-align: center;">Memuat data...</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -485,200 +169,111 @@
                 </div>
 
                 <!-- Statistik Section -->
-                <div id="statistik" style="margin-top: 3rem;">
-                    <h2 style="margin-bottom: 1.5rem; color: var(--text-light);">📊 Statistik Detail</h2>
-                    <div class="chart-card" style="margin-bottom: 2rem;">
-                        <h3>📅 Grafik Pendaftaran per Hari</h3>
-                        <canvas id="registrationChart"></canvas>
+                <div id="statistik-section" style="display: none;">
+                    <h1 style="margin-bottom: 2rem;">Statistik Detail</h1>
+                    
+                    <div class="charts-grid">
+                        <div class="chart-card">
+                            <h3>Distribusi Jurusan</h3>
+                            <div class="chart-container">
+                                <canvas id="jurusanDetailChart" width="400" height="300"></canvas>
+                            </div>
+                        </div>
+                        <div class="chart-card">
+                            <h3>Distribusi Ekskul</h3>
+                            <div class="chart-container">
+                                <canvas id="ekskulDetailChart" width="400" height="300"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-card">
+                        <h3>Tren Pendaftaran Harian</h3>
+                        <div class="chart-container">
+                            <canvas id="trenChart" width="800" height="300"></canvas>
+                        </div>
                     </div>
                 </div>
             </main>
         </div>
     </div>
 
-    <!-- Scripts -->
-    <script src="js/firebase-config.js"></script>
+    <!-- Firebase Config & Script -->
     <script>
         // ============================================
-        // ADMIN SCRIPT - INLINE UNTUK MEMASTIKAN BERJALAN
+        // FIREBASE CONFIG
         // ============================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyBMdBOguRVd02u79idp4xAoTfjDy-h28EQ",
+            authDomain: "osisedimahendra.firebaseapp.com",
+            projectId: "osisedimahendra",
+            storageBucket: "osisedimahendra.firebasestorage.app",
+            messagingSenderId: "382159139986",
+            appId: "1:382159139986:web:f33b3470b1136ccf50a24b"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
         
+        console.log('✅ Firebase Admin initialized');
+
+        // ============================================
+        // GLOBAL VARIABLES
+        // ============================================
+        const ADMIN_PASSWORD = 'admin123'; // Ganti password sesuai kebutuhan
         let allSiswaData = [];
-        
-        // Check if Firebase is loaded
-        console.log('Firebase available:', typeof firebase !== 'undefined');
-        console.log('Firestore available:', typeof firebase !== 'undefined' && typeof firebase.firestore === 'function');
-        
-        // ============================================
-        // INITIALIZATION
-        // ============================================
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Admin page loaded');
-            initAdmin();
-        });
-        
-        function initAdmin() {
-            // Check auth state
-            if (typeof firebase === 'undefined') {
-                showToast('❌ Firebase tidak terload. Cek koneksi internet!', 'error');
-                return;
-            }
-            
-            auth.onAuthStateChanged(function(user) {
-                const loginForm = document.getElementById('loginForm');
-                const adminContent = document.getElementById('adminContent');
-                
-                if (user) {
-                    console.log('✅ User logged in:', user.email);
-                    if (loginForm) loginForm.style.display = 'none';
-                    if (adminContent) adminContent.style.display = 'block';
-                    
-                    // Display admin email
-                    const emailDisplay = document.getElementById('adminEmailDisplay');
-                    if (emailDisplay) emailDisplay.textContent = user.email;
-                    
-                    // Load data
-                    loadAdminData();
-                } else {
-                    console.log('❌ No user logged in');
-                    if (loginForm) loginForm.style.display = 'flex';
-                    if (adminContent) adminContent.style.display = 'none';
-                }
-            }, function(error) {
-                console.error('Auth state error:', error);
-                showToast('❌ Error autentikasi: ' + error.message, 'error');
-            });
-            
-            // Login form handler
-            const loginForm = document.getElementById('adminLoginForm');
-            if (loginForm) {
-                loginForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    handleLogin();
-                });
-            }
-            
-            // Logout button
-            const logoutBtn = document.getElementById('logoutBtn');
-            if (logoutBtn) {
-                logoutBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    handleLogout();
-                });
-            }
-            
-            // Search and filters
-            const searchInput = document.getElementById('searchSiswa');
-            if (searchInput) {
-                searchInput.addEventListener('input', function() {
-                    filterSiswa();
-                });
-            }
-            
-            const filterJurusan = document.getElementById('filterJurusan');
-            if (filterJurusan) {
-                filterJurusan.addEventListener('change', function() {
-                    filterSiswa();
-                });
-            }
-            
-            // Export button
-            const exportBtn = document.getElementById('exportExcel');
-            if (exportBtn) {
-                exportBtn.addEventListener('click', function() {
-                    exportToExcel();
-                });
-            }
-        }
-        
+        let isLoggedIn = false;
+
         // ============================================
         // AUTH FUNCTIONS
         // ============================================
-        async function handleLogin() {
-            const email = document.getElementById('adminEmail').value.trim();
+        function handleLogin(event) {
+            event.preventDefault();
+            
             const password = document.getElementById('adminPassword').value;
-            const submitBtn = document.querySelector('#adminLoginForm button[type="submit"]');
             
-            if (!email || !password) {
-                showToast('❌ Email dan password harus diisi!', 'error');
-                return;
-            }
-            
-            if (submitBtn) {
-                submitBtn.disabled = true;
-                submitBtn.textContent = 'Login...';
-            }
-            
-            try {
-                console.log('Attempting login...');
-                await auth.signInWithEmailAndPassword(email, password);
-                showToast('✅ Login berhasil!', 'success');
-            } catch (error) {
-                console.error('Login error:', error);
-                let message = 'Login gagal!';
-                
-                switch (error.code) {
-                    case 'auth/user-not-found':
-                        message = '❌ Email tidak terdaftar';
-                        break;
-                    case 'auth/wrong-password':
-                        message = '❌ Password salah';
-                        break;
-                    case 'auth/invalid-email':
-                        message = '❌ Format email tidak valid';
-                        break;
-                    case 'auth/too-many-requests':
-                        message = '❌ Terlalu banyak percobaan. Coba lagi nanti.';
-                        break;
-                    default:
-                        message = '❌ ' + error.message;
-                }
-                
-                showToast(message, 'error');
-            } finally {
-                if (submitBtn) {
-                    submitBtn.disabled = false;
-                    submitBtn.textContent = '🔓 Login';
-                }
+            if (password === ADMIN_PASSWORD) {
+                isLoggedIn = true;
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('adminContent').style.display = 'block';
+                showToast('✅ Login berhasil! Selamat datang Admin.', 'success');
+                loadAllData();
+            } else {
+                showToast('❌ Password salah! Coba lagi.', 'error');
             }
         }
-        
-        async function handleLogout() {
-            try {
-                await auth.signOut();
-                showToast('✅ Logout berhasil', 'success');
-            } catch (error) {
-                console.error('Logout error:', error);
-                showToast('❌ Gagal logout', 'error');
+
+        function handleLogout() {
+            if (confirm('Apakah Anda yakin ingin logout?')) {
+                isLoggedIn = false;
+                document.getElementById('loginForm').style.display = 'flex';
+                document.getElementById('adminContent').style.display = 'none';
+                document.getElementById('adminPassword').value = '';
+                showToast('👋 Logout berhasil!', 'info');
             }
         }
-        
+
         // ============================================
-        // DATA FUNCTIONS
+        // LOAD DATA
         // ============================================
-        async function loadAdminData() {
+        async function loadAllData() {
             try {
-                console.log('Loading admin data...');
-                
-                // Show loading
-                const tableBody = document.getElementById('siswaTableBody');
-                if (tableBody) {
-                    tableBody.innerHTML = '<tr><td colspan="11" style="text-align:center;">⏳ Memuat data...</td></tr>';
-                }
+                console.log('📥 Loading data from Firestore...');
                 
                 const snapshot = await db.collection('pendaftaran')
                     .orderBy('createdAt', 'desc')
                     .get();
                 
                 allSiswaData = [];
-                snapshot.forEach(function(doc) {
+                snapshot.forEach((doc) => {
                     allSiswaData.push({
                         id: doc.id,
                         ...doc.data()
                     });
                 });
                 
-                console.log('✅ Data loaded:', allSiswaData.length, 'records');
+                console.log(`✅ Loaded ${allSiswaData.length} records`);
                 
                 updateStats();
                 renderTable(allSiswaData);
@@ -686,14 +281,10 @@
                 
             } catch (error) {
                 console.error('❌ Error loading data:', error);
-                const tableBody = document.getElementById('siswaTableBody');
-                if (tableBody) {
-                    tableBody.innerHTML = '<tr><td colspan="11" style="text-align:center; color: red;">❌ Gagal memuat data: ' + error.message + '</td></tr>';
-                }
                 showToast('❌ Gagal memuat data: ' + error.message, 'error');
             }
         }
-        
+
         function updateStats() {
             const totalSiswa = allSiswaData.length;
             
@@ -703,31 +294,28 @@
             let verified = 0;
             let pending = 0;
             
-            allSiswaData.forEach(function(siswa) {
-                // Count jurusan
+            allSiswaData.forEach((siswa) => {
+                // Jurusan
                 if (siswa.jurusan1) {
                     jurusanCount[siswa.jurusan1] = (jurusanCount[siswa.jurusan1] || 0) + 1;
                 }
                 
-                // Count ekskul
+                // Ekskul
                 if (siswa.ekskul && Array.isArray(siswa.ekskul)) {
-                    siswa.ekskul.forEach(function(ekskul) {
+                    siswa.ekskul.forEach((ekskul) => {
                         ekskulCount[ekskul] = (ekskulCount[ekskul] || 0) + 1;
                     });
                 }
                 
-                // Count status
-                if (siswa.status === 'verified') {
-                    verified++;
-                } else {
-                    pending++;
-                }
+                // Status
+                if (siswa.status === 'verified') verified++;
+                else pending++;
             });
             
-            // Find most popular
+            // Find popular
             let popularJurusan = '-';
             let maxJurusan = 0;
-            Object.entries(jurusanCount).forEach(function([jurusan, count]) {
+            Object.entries(jurusanCount).forEach(([jurusan, count]) => {
                 if (count > maxJurusan) {
                     maxJurusan = count;
                     popularJurusan = jurusan;
@@ -736,7 +324,7 @@
             
             let popularEkskul = '-';
             let maxEkskul = 0;
-            Object.entries(ekskulCount).forEach(function([ekskul, count]) {
+            Object.entries(ekskulCount).forEach(([ekskul, count]) => {
                 if (count > maxEkskul) {
                     maxEkskul = count;
                     popularEkskul = ekskul;
@@ -744,33 +332,35 @@
             });
             
             // Update DOM
-            setText('totalSiswa', totalSiswa);
-            setText('jurusanFavorit', popularJurusan);
-            setText('ekskulFavorit', popularEkskul);
-            setText('verifiedCount', verified);
-            setText('pendingCount', pending);
+            document.getElementById('totalSiswa').textContent = totalSiswa;
+            document.getElementById('jurusanFavorit').textContent = popularJurusan;
+            document.getElementById('ekskulFavorit').textContent = popularEkskul;
+            document.getElementById('verifiedCount').textContent = verified;
+            document.getElementById('pendingCount').textContent = pending;
         }
-        
+
         function renderTable(data) {
             const tableBody = document.getElementById('siswaTableBody');
             if (!tableBody) return;
             
             if (data.length === 0) {
-                tableBody.innerHTML = '<tr><td colspan="11" style="text-align:center;">📭 Belum ada data pendaftar</td></tr>';
+                tableBody.innerHTML = '<tr><td colspan="12" style="text-align: center; padding: 20px;">📭 Belum ada data pendaftar</td></tr>';
                 return;
             }
             
-            tableBody.innerHTML = data.map(function(siswa, index) {
+            tableBody.innerHTML = data.map((siswa, index) => {
                 const createdAt = siswa.createdAt ? 
                     new Date(siswa.createdAt.toDate()).toLocaleDateString('id-ID', {
                         day: 'numeric',
                         month: 'short',
-                        year: 'numeric'
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
                     }) : '-';
                 
                 const statusBadge = siswa.status === 'verified' ? 
-                    '<span style="color: #10B981;">✅ Verified</span>' : 
-                    '<span style="color: #F59E0B;">⏳ Pending</span>';
+                    '<span style="color: #10B981; font-weight: 600;">✅ Verified</span>' : 
+                    '<span style="color: #F59E0B; font-weight: 600;">⏳ Pending</span>';
                 
                 const ekskulList = (siswa.ekskul && Array.isArray(siswa.ekskul)) ? 
                     siswa.ekskul.join(', ') : '-';
@@ -778,55 +368,66 @@
                 return `
                     <tr>
                         <td>${index + 1}</td>
-                        <td>${siswa.nama || '-'}</td>
+                        <td><strong>${siswa.nama || '-'}</strong></td>
                         <td>${siswa.nisn || '-'}</td>
                         <td>${siswa.asalSekolah || '-'}</td>
                         <td>${siswa.whatsapp || '-'}</td>
+                        <td>${siswa.email || '-'}</td>
                         <td>${siswa.jurusan1 || '-'}</td>
                         <td>${siswa.jurusan2 || '-'}</td>
                         <td>${ekskulList}</td>
                         <td>${statusBadge}</td>
                         <td>${createdAt}</td>
                         <td>
-                            <div class="action-buttons">
-                                ${siswa.status !== 'verified' ? 
-                                    `<button class="btn-sm btn-verify" onclick="verifySiswa('${siswa.id}')" title="Verifikasi">✅</button>` : 
-                                    ''}
-                                <button class="btn-sm btn-delete" onclick="deleteSiswa('${siswa.id}')" title="Hapus">🗑️</button>
-                            </div>
+                            <button class="btn btn-sm btn-success" onclick="verifySiswa('${siswa.id}')" 
+                                ${siswa.status === 'verified' ? 'disabled' : ''} 
+                                title="Verifikasi">
+                                ✅
+                            </button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteSiswa('${siswa.id}')" 
+                                title="Hapus">
+                                🗑️
+                            </button>
                         </td>
                     </tr>
                 `;
             }).join('');
         }
-        
+
         function filterSiswa() {
             const searchTerm = (document.getElementById('searchSiswa')?.value || '').toLowerCase();
             const filterJurusan = document.getElementById('filterJurusan')?.value || '';
+            const filterEkskul = document.getElementById('filterEkskul')?.value || '';
             
             let filtered = allSiswaData;
             
             if (searchTerm) {
-                filtered = filtered.filter(function(s) {
-                    return (s.nama && s.nama.toLowerCase().includes(searchTerm)) ||
-                           (s.nisn && s.nisn.includes(searchTerm)) ||
-                           (s.asalSekolah && s.asalSekolah.toLowerCase().includes(searchTerm));
-                });
+                filtered = filtered.filter((s) => 
+                    (s.nama && s.nama.toLowerCase().includes(searchTerm)) ||
+                    (s.nisn && s.nisn.includes(searchTerm)) ||
+                    (s.asalSekolah && s.asalSekolah.toLowerCase().includes(searchTerm))
+                );
             }
             
             if (filterJurusan) {
-                filtered = filtered.filter(function(s) {
-                    return s.jurusan1 === filterJurusan || s.jurusan2 === filterJurusan;
-                });
+                filtered = filtered.filter((s) => 
+                    s.jurusan1 === filterJurusan || s.jurusan2 === filterJurusan
+                );
+            }
+            
+            if (filterEkskul) {
+                filtered = filtered.filter((s) => 
+                    s.ekskul && Array.isArray(s.ekskul) && s.ekskul.includes(filterEkskul)
+                );
             }
             
             renderTable(filtered);
         }
-        
+
         // ============================================
         // ACTION FUNCTIONS
         // ============================================
-        window.verifySiswa = async function(id) {
+        async function verifySiswa(id) {
             if (!confirm('Verifikasi pendaftaran siswa ini?')) return;
             
             try {
@@ -835,26 +436,26 @@
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
                 showToast('✅ Siswa berhasil diverifikasi!', 'success');
-                loadAdminData();
+                loadAllData();
             } catch (error) {
                 console.error('Error:', error);
                 showToast('❌ Gagal verifikasi: ' + error.message, 'error');
             }
-        };
-        
-        window.deleteSiswa = async function(id) {
+        }
+
+        async function deleteSiswa(id) {
             if (!confirm('⚠️ Apakah Anda yakin ingin menghapus data ini?\nTindakan ini tidak dapat dibatalkan!')) return;
             
             try {
                 await db.collection('pendaftaran').doc(id).delete();
                 showToast('✅ Data berhasil dihapus!', 'success');
-                loadAdminData();
+                loadAllData();
             } catch (error) {
                 console.error('Error:', error);
                 showToast('❌ Gagal menghapus: ' + error.message, 'error');
             }
-        };
-        
+        }
+
         function exportToExcel() {
             if (allSiswaData.length === 0) {
                 showToast('⚠️ Tidak ada data untuk diexport', 'warning');
@@ -863,7 +464,7 @@
             
             let csv = 'No,Nama,NISN,Asal Sekolah,WhatsApp,Email,Jurusan 1,Jurusan 2,Ekskul,Status,Tanggal Daftar\n';
             
-            allSiswaData.forEach(function(s, index) {
+            allSiswaData.forEach((s, index) => {
                 const createdAt = s.createdAt ? 
                     new Date(s.createdAt.toDate()).toLocaleDateString('id-ID') : '-';
                 const ekskul = (s.ekskul && Array.isArray(s.ekskul)) ? s.ekskul.join('; ') : '-';
@@ -883,30 +484,57 @@
             
             showToast('✅ Data berhasil diexport ke Excel!', 'success');
         }
-        
+
+        // ============================================
+        // SECTION NAVIGATION
+        // ============================================
+        function showSection(section) {
+            // Hide all sections
+            document.getElementById('dashboard-section').style.display = 'none';
+            document.getElementById('siswa-section').style.display = 'none';
+            document.getElementById('statistik-section').style.display = 'none';
+            
+            // Show selected section
+            document.getElementById(section + '-section').style.display = 'block';
+            
+            // Update active menu
+            document.querySelectorAll('.admin-menu a').forEach((link) => {
+                link.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Reload charts if statistics section
+            if (section === 'statistik') {
+                setTimeout(loadDetailCharts, 100);
+            }
+        }
+
         // ============================================
         // CHARTS
         // ============================================
         function loadCharts() {
-            loadJurusanChart();
-            loadEkskulChart();
-            loadRegistrationChart();
+            loadJurusanChart('jurusanChart');
+            loadEkskulChart('ekskulChart');
+            loadRegistrationChart('registrationChart');
         }
         
-        function loadJurusanChart() {
-            const canvas = document.getElementById('jurusanChart');
+        function loadDetailCharts() {
+            loadJurusanChart('jurusanDetailChart');
+            loadEkskulChart('ekskulDetailChart');
+            loadRegistrationChart('trenChart');
+        }
+
+        function loadJurusanChart(canvasId) {
+            const canvas = document.getElementById(canvasId);
             if (!canvas) return;
             
             const ctx = canvas.getContext('2d');
-            const width = canvas.parentElement.clientWidth;
-            const height = 300;
+            const container = canvas.parentElement;
+            canvas.width = container.clientWidth;
+            canvas.height = 300;
             
-            canvas.width = width;
-            canvas.height = height;
-            
-            // Count data
             const jurusanCount = {};
-            allSiswaData.forEach(function(s) {
+            allSiswaData.forEach((s) => {
                 if (s.jurusan1) {
                     jurusanCount[s.jurusan1] = (jurusanCount[s.jurusan1] || 0) + 1;
                 }
@@ -915,33 +543,33 @@
             const labels = Object.keys(jurusanCount);
             const data = Object.values(jurusanCount);
             
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
             if (labels.length === 0) {
                 ctx.fillStyle = '#8892B0';
                 ctx.font = '14px Poppins';
                 ctx.textAlign = 'center';
-                ctx.fillText('Belum ada data', width / 2, height / 2);
+                ctx.fillText('Belum ada data', canvas.width / 2, canvas.height / 2);
                 return;
             }
             
-            const barWidth = (width - 100) / labels.length;
+            const barWidth = Math.min(80, (canvas.width - 100) / labels.length);
             const maxValue = Math.max(...data, 1);
-            const chartHeight = height - 80;
+            const chartHeight = canvas.height - 80;
             
-            // Draw bars
-            data.forEach(function(value, index) {
+            data.forEach((value, index) => {
                 const barHeight = (value / maxValue) * chartHeight;
-                const x = 50 + index * barWidth;
-                const y = height - 50 - barHeight;
+                const x = 50 + index * (barWidth + 10);
+                const y = canvas.height - 50 - barHeight;
                 
-                // Gradient
-                const gradient = ctx.createLinearGradient(x, y, x, height - 50);
+                const gradient = ctx.createLinearGradient(x, y, x, canvas.height - 50);
                 gradient.addColorStop(0, '#00F0FF');
                 gradient.addColorStop(1, '#0066FF');
                 
                 ctx.fillStyle = gradient;
-                ctx.fillRect(x + 10, y, barWidth - 20, barHeight);
+                ctx.fillRect(x, y, barWidth, barHeight);
                 
-                // Value on top
+                // Value
                 ctx.fillStyle = '#FFFFFF';
                 ctx.font = 'bold 12px Poppins';
                 ctx.textAlign = 'center';
@@ -951,26 +579,23 @@
                 ctx.fillStyle = '#8892B0';
                 ctx.font = '10px Poppins';
                 const shortLabel = labels[index].length > 15 ? labels[index].substring(0, 15) + '...' : labels[index];
-                ctx.fillText(shortLabel, x + barWidth / 2, height - 20);
+                ctx.fillText(shortLabel, x + barWidth / 2, canvas.height - 20);
             });
         }
-        
-        function loadEkskulChart() {
-            const canvas = document.getElementById('ekskulChart');
+
+        function loadEkskulChart(canvasId) {
+            const canvas = document.getElementById(canvasId);
             if (!canvas) return;
             
             const ctx = canvas.getContext('2d');
-            const width = canvas.parentElement.clientWidth;
-            const height = 300;
+            const container = canvas.parentElement;
+            canvas.width = container.clientWidth;
+            canvas.height = 300;
             
-            canvas.width = width;
-            canvas.height = height;
-            
-            // Count data
             const ekskulCount = {};
-            allSiswaData.forEach(function(s) {
+            allSiswaData.forEach((s) => {
                 if (s.ekskul && Array.isArray(s.ekskul)) {
-                    s.ekskul.forEach(function(e) {
+                    s.ekskul.forEach((e) => {
                         ekskulCount[e] = (ekskulCount[e] || 0) + 1;
                     });
                 }
@@ -980,24 +605,24 @@
             const labels = entries.map(e => e[0]);
             const data = entries.map(e => e[1]);
             
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
             if (labels.length === 0) {
                 ctx.fillStyle = '#8892B0';
                 ctx.font = '14px Poppins';
                 ctx.textAlign = 'center';
-                ctx.fillText('Belum ada data', width / 2, height / 2);
+                ctx.fillText('Belum ada data', canvas.width / 2, canvas.height / 2);
                 return;
             }
             
-            const barHeight = Math.min(30, (height - 100) / labels.length);
+            const barHeight = Math.min(25, (canvas.height - 100) / labels.length);
             const maxValue = Math.max(...data, 1);
-            const chartWidth = width - 250;
+            const chartWidth = canvas.width - 250;
             
-            // Draw horizontal bars
-            data.forEach(function(value, index) {
+            data.forEach((value, index) => {
                 const barWidth = (value / maxValue) * chartWidth;
                 const y = 40 + index * (barHeight + 5);
                 
-                // Gradient
                 const gradient = ctx.createLinearGradient(0, y, barWidth, y);
                 gradient.addColorStop(0, '#0066FF');
                 gradient.addColorStop(1, '#00F0FF');
@@ -1016,21 +641,18 @@
                 ctx.fillText(value, 160 + barWidth, y + barHeight / 2 + 4);
             });
         }
-        
-        function loadRegistrationChart() {
-            const canvas = document.getElementById('registrationChart');
+
+        function loadRegistrationChart(canvasId) {
+            const canvas = document.getElementById(canvasId);
             if (!canvas) return;
             
             const ctx = canvas.getContext('2d');
-            const width = canvas.parentElement.clientWidth;
-            const height = 300;
+            const container = canvas.parentElement;
+            canvas.width = container.clientWidth;
+            canvas.height = 300;
             
-            canvas.width = width;
-            canvas.height = height;
-            
-            // Group by date
             const dateCount = {};
-            allSiswaData.forEach(function(s) {
+            allSiswaData.forEach((s) => {
                 if (s.createdAt) {
                     const date = new Date(s.createdAt.toDate()).toLocaleDateString('id-ID');
                     dateCount[date] = (dateCount[date] || 0) + 1;
@@ -1040,114 +662,137 @@
             const dates = Object.keys(dateCount).sort();
             const values = dates.map(d => dateCount[d]);
             
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
             if (dates.length < 2) {
                 ctx.fillStyle = '#8892B0';
                 ctx.font = '14px Poppins';
                 ctx.textAlign = 'center';
-                ctx.fillText('Data belum cukup untuk grafik', width / 2, height / 2);
+                ctx.fillText('Data belum cukup untuk grafik', canvas.width / 2, canvas.height / 2);
                 return;
             }
             
-            // Draw line chart
             const maxValue = Math.max(...values, 1);
-            const xStep = (width - 100) / (dates.length - 1 || 1);
-            const chartHeight = height - 100;
+            const xStep = (canvas.width - 100) / (dates.length - 1 || 1);
+            const chartHeight = canvas.height - 100;
             
+            // Draw line
             ctx.beginPath();
             ctx.strokeStyle = '#00F0FF';
             ctx.lineWidth = 3;
-            ctx.lineJoin = 'round';
             
-            values.forEach(function(value, index) {
+            values.forEach((value, index) => {
                 const x = 50 + index * xStep;
-                const y = height - 50 - (value / maxValue) * chartHeight;
+                const y = canvas.height - 50 - (value / maxValue) * chartHeight;
                 
-                if (index === 0) {
-                    ctx.moveTo(x, y);
-                } else {
-                    ctx.lineTo(x, y);
-                }
+                if (index === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
                 
-                // Draw point
+                // Point
                 ctx.fillStyle = '#00F0FF';
                 ctx.beginPath();
                 ctx.arc(x, y, 5, 0, Math.PI * 2);
                 ctx.fill();
                 
-                // Draw value
+                // Value
                 ctx.fillStyle = '#FFFFFF';
                 ctx.font = '10px Poppins';
                 ctx.textAlign = 'center';
                 ctx.fillText(value, x, y - 15);
                 
-                // Draw date
+                // Date
                 ctx.fillStyle = '#8892B0';
-                ctx.fillText(dates[index], x, height - 25);
+                ctx.fillText(dates[index], x, canvas.height - 25);
             });
             
             ctx.stroke();
         }
-        
+
         // ============================================
-        // UTILITY FUNCTIONS
+        // TOAST NOTIFICATION
         // ============================================
         function showToast(message, type = 'info') {
-            const existingToast = document.querySelector('.toast');
+            const existingToast = document.querySelector('.toast-notification');
             if (existingToast) existingToast.remove();
             
+            const colors = {
+                success: '#10B981',
+                error: '#EF4444',
+                warning: '#F59E0B',
+                info: '#3B82F6'
+            };
+            
             const toast = document.createElement('div');
-            toast.className = `toast toast-${type}`;
+            toast.className = 'toast-notification';
             toast.textContent = message;
             toast.style.cssText = `
                 position: fixed;
                 top: 20px;
                 right: 20px;
-                padding: 1rem 1.5rem;
+                padding: 15px 20px;
                 background: rgba(10, 14, 39, 0.95);
                 backdrop-filter: blur(10px);
                 border: 1px solid rgba(255, 255, 255, 0.1);
-                border-left: 4px solid ${type === 'success' ? '#10B981' : type === 'error' ? '#EF4444' : '#3B82F6'};
+                border-left: 4px solid ${colors[type] || colors.info};
                 border-radius: 8px;
                 color: white;
                 z-index: 10000;
                 font-family: 'Poppins', sans-serif;
                 font-size: 0.9rem;
-                animation: slideInRight 0.3s ease-out;
                 max-width: 400px;
+                animation: slideInRight 0.3s ease-out;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             `;
+            
             document.body.appendChild(toast);
             
-            setTimeout(function() {
+            setTimeout(() => {
                 toast.style.opacity = '0';
                 toast.style.transform = 'translateX(100px)';
                 toast.style.transition = 'all 0.3s ease';
-                setTimeout(function() {
-                    if (toast.parentNode) {
-                        toast.parentNode.removeChild(toast);
-                    }
+                setTimeout(() => {
+                    if (toast.parentNode) toast.parentNode.removeChild(toast);
                 }, 300);
             }, 3000);
         }
-        
-        function setText(id, value) {
-            const el = document.getElementById(id);
-            if (el) el.textContent = value;
-        }
-        
-        function scrollToSection(sectionId) {
-            const section = document.getElementById(sectionId);
-            if (section) {
-                section.scrollIntoView({ behavior: 'smooth' });
+
+        // ============================================
+        // INITIALIZATION
+        // ============================================
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Admin page loaded');
+            
+            // Login form handler
+            const loginForm = document.getElementById('adminLoginForm');
+            if (loginForm) {
+                loginForm.addEventListener('submit', handleLogin);
             }
             
-            // Update active menu
-            document.querySelectorAll('.admin-menu a').forEach(function(link) {
-                link.classList.remove('active');
-            });
-            event.target.classList.add('active');
-        }
-        
-        // Add animation style
+            // Check if already logged in (session)
+            if (sessionStorage.getItem('adminLoggedIn') === 'true') {
+                isLoggedIn = true;
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('adminContent').style.display = 'block';
+                loadAllData();
+            }
+        });
+
+        // Save login state
+        const originalLogin = handleLogin;
+        handleLogin = function(event) {
+            originalLogin(event);
+            if (isLoggedIn) {
+                sessionStorage.setItem('adminLoggedIn', 'true');
+            }
+        };
+
+        const originalLogout = handleLogout;
+        handleLogout = function() {
+            originalLogout();
+            sessionStorage.removeItem('adminLoggedIn');
+        };
+
+        // Add animation
         const style = document.createElement('style');
         style.textContent = `
             @keyframes slideInRight {
@@ -1162,6 +807,9 @@
             }
         `;
         document.head.appendChild(style);
+        
+        console.log('✅ Admin script loaded successfully');
+        console.log('📝 Default password: admin123');
     </script>
 </body>
 </html>
