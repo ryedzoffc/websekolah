@@ -1,149 +1,36 @@
 <!DOCTYPE html>
-<html lang="id">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - SMK TI Bali Global Karangasem</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>Create Admin</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 </head>
 <body>
-    <!-- Login Form (Hidden when logged in) -->
-    <div id="loginForm" style="display: flex; justify-content: center; align-items: center; min-height: 100vh;">
-        <div class="glass-card" style="width: 100%; max-width: 400px;">
-            <h2 style="text-align: center; margin-bottom: 2rem; color: var(--primary-neon);">Admin Login</h2>
-            <form id="adminLoginForm">
-                <div class="form-group">
-                    <label class="form-label" for="adminEmail">Email</label>
-                    <input type="email" id="adminEmail" class="form-control" placeholder="admin@smkti.sch.id" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="adminPassword">Password</label>
-                    <input type="password" id="adminPassword" class="form-control" placeholder="Password" required>
-                </div>
-                <button type="submit" class="btn btn-primary btn-block">Login</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Admin Dashboard (Hidden when logged out) -->
-    <div id="adminContent" style="display: none;">
-        <div class="admin-layout">
-            <!-- Sidebar -->
-            <aside class="admin-sidebar" id="adminSidebar">
-                <div class="admin-sidebar-header">
-                    <h2>Admin Panel</h2>
-                    <p style="color: var(--text-gray); font-size: 0.85rem;">SMK TI Bali Global</p>
-                </div>
-                <ul class="admin-menu">
-                    <li><a href="#dashboard" class="active">📊 Dashboard</a></li>
-                    <li><a href="#siswa">👥 Data Siswa</a></li>
-                    <li><a href="#statistik">📈 Statistik</a></li>
-                    <li><a href="#" id="logoutBtn">🚪 Logout</a></li>
-                </ul>
-            </aside>
-
-            <!-- Main Content -->
-            <main class="admin-main">
-                <h1 style="margin-bottom: 2rem;">Dashboard Admin</h1>
-
-                <!-- Statistics Cards -->
-                <div class="admin-stats">
-                    <div class="admin-stat-card">
-                        <div class="admin-stat-value" id="totalSiswa">0</div>
-                        <div class="admin-stat-label">Total Pendaftar</div>
-                    </div>
-                    <div class="admin-stat-card">
-                        <div class="admin-stat-value" id="jurusanFavorit">-</div>
-                        <div class="admin-stat-label">Jurusan Terfavorit</div>
-                    </div>
-                    <div class="admin-stat-card">
-                        <div class="admin-stat-value" id="ekskulFavorit">-</div>
-                        <div class="admin-stat-label">Ekskul Terfavorit</div>
-                    </div>
-                    <div class="admin-stat-card">
-                        <div class="admin-stat-value">
-                            <span style="color: var(--success);" id="verifiedCount">0</span> / 
-                            <span style="color: var(--warning);" id="pendingCount">0</span>
-                        </div>
-                        <div class="admin-stat-label">Verified / Pending</div>
-                    </div>
-                </div>
-
-                <!-- Charts -->
-                <div class="charts-grid">
-                    <div class="chart-card">
-                        <h3>Statistik Jurusan</h3>
-                        <div class="chart-container">
-                            <canvas id="jurusanChart" width="400" height="300"></canvas>
-                        </div>
-                    </div>
-                    <div class="chart-card">
-                        <h3>Statistik Ekskul</h3>
-                        <div class="chart-container">
-                            <canvas id="ekskulChart" width="400" height="300"></canvas>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="chart-card" style="margin-bottom: 2rem;">
-                    <h3>Grafik Pendaftaran</h3>
-                    <div class="chart-container">
-                        <canvas id="registrationChart" width="800" height="300"></canvas>
-                    </div>
-                </div>
-
-                <!-- Data Table -->
-                <div class="admin-table-container">
-                    <div class="admin-table-header">
-                        <h3>Data Siswa</h3>
-                        <div class="table-filters">
-                            <input type="text" id="searchSiswa" class="filter-select" placeholder="Cari siswa...">
-                            <select id="filterJurusan" class="filter-select">
-                                <option value="">Semua Jurusan</option>
-                                <option value="Rekayasa Perangkat Lunak (RPL)">RPL</option>
-                                <option value="Teknik Komputer dan Jaringan (TKJ)">TKJ</option>
-                                <option value="Multimedia">Multimedia</option>
-                                <option value="Akuntansi dan Keuangan Lembaga (AKL)">AKL</option>
-                                <option value="Perhotelan">Perhotelan</option>
-                            </select>
-                            <select id="filterEkskul" class="filter-select">
-                                <option value="">Semua Ekskul</option>
-                                <option value="OSIS">OSIS</option>
-                                <option value="Pramuka">Pramuka</option>
-                                <option value="Basket">Basket</option>
-                                <option value="Futsal">Futsal</option>
-                                <option value="Coding Club">Coding Club</option>
-                                <option value="Robotik">Robotik</option>
-                            </select>
-                            <button id="exportExcel" class="btn btn-success btn-sm">📥 Export Excel</button>
-                        </div>
-                    </div>
-                    <div class="table-wrapper">
-                        <table class="admin-table">
-                            <thead>
-                                <tr>
-                                    <th>Nama</th>
-                                    <th>NISN</th>
-                                    <th>Asal Sekolah</th>
-                                    <th>Jurusan 1</th>
-                                    <th>Ekskul</th>
-                                    <th>Status</th>
-                                    <th>Tanggal Daftar</th>
-                                    <th>Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody id="siswaTableBody">
-                                <tr>
-                                    <td colspan="8" style="text-align: center;">Memuat data...</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </main>
-        </div>
-    </div>
-
-    <script type="module" src="js/script.js"></script>
+    <h1>Create Admin User</h1>
+    <button onclick="createAdmin()">Create Admin</button>
+    <div id="result"></div>
+    
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBMdBOguRVd02u79idp4xAoTfjDy-h28EQ",
+            authDomain: "osisedimahendra.firebaseapp.com",
+            projectId: "osisedimahendra",
+            storageBucket: "osisedimahendra.firebasestorage.app",
+            messagingSenderId: "382159139986",
+            appId: "1:382159139986:web:f33b3470b1136ccf50a24b"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        
+        async function createAdmin() {
+            const auth = firebase.auth();
+            try {
+                await auth.createUserWithEmailAndPassword('admin@smkti.sch.id', 'admin123');
+                document.getElementById('result').innerHTML = '✅ Admin created successfully!<br>Email: admin@smkti.sch.id<br>Password: admin123';
+            } catch (error) {
+                document.getElementById('result').innerHTML = 'Error: ' + error.message;
+            }
+        }
+    </script>
 </body>
 </html>
