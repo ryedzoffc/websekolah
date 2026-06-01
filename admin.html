@@ -12,12 +12,7 @@
     <link rel="stylesheet" href="css/style.css">
     
     <style>
-        /* Reset & Base */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body {
             font-family: 'Poppins', sans-serif;
@@ -25,7 +20,6 @@
             color: #fff;
         }
         
-        /* Login Page */
         .login-page {
             display: flex;
             justify-content: center;
@@ -61,13 +55,11 @@
             font-size: 0.9rem;
         }
         
-        /* Admin Layout */
         .admin-container {
             display: flex;
             min-height: 100vh;
         }
         
-        /* Sidebar */
         .sidebar {
             width: 280px;
             background: rgba(10, 14, 39, 0.98);
@@ -124,7 +116,6 @@
         .sidebar-menu a.active {
             background: rgba(0, 240, 255, 0.1);
             color: #00F0FF;
-            transform: translateX(5px);
         }
         
         .sidebar-footer {
@@ -154,7 +145,6 @@
             font-weight: bold;
         }
         
-        /* Main Content */
         .main-content {
             flex: 1;
             margin-left: 280px;
@@ -181,7 +171,6 @@
             margin-bottom: 30px;
         }
         
-        /* Stats Cards */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -225,18 +214,7 @@
             font-size: 2rem;
             font-weight: 700;
             margin-bottom: 5px;
-        }
-        
-        .stat-value.blue {
             color: #00F0FF;
-        }
-        
-        .stat-value.green {
-            color: #10B981;
-        }
-        
-        .stat-value.orange {
-            color: #F59E0B;
         }
         
         .stat-label {
@@ -244,7 +222,6 @@
             font-size: 0.9rem;
         }
         
-        /* Table */
         .table-container {
             background: rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(20px);
@@ -263,10 +240,6 @@
             gap: 15px;
         }
         
-        .table-header h3 {
-            font-size: 1.2rem;
-        }
-        
         .table-filters {
             display: flex;
             gap: 10px;
@@ -283,10 +256,6 @@
             font-family: 'Poppins', sans-serif;
             font-size: 0.9rem;
             min-width: 200px;
-        }
-        
-        .search-input::placeholder {
-            color: #8892B0;
         }
         
         .filter-select {
@@ -336,7 +305,6 @@
             background: rgba(0, 240, 255, 0.02);
         }
         
-        /* Buttons */
         .btn {
             padding: 10px 20px;
             border: none;
@@ -346,6 +314,8 @@
             cursor: pointer;
             transition: all 0.3s;
             font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
         }
         
         .btn-primary {
@@ -353,22 +323,8 @@
             color: white;
         }
         
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(0, 102, 255, 0.3);
-        }
-        
         .btn-success {
             background: #10B981;
-            color: white;
-        }
-        
-        .btn-success:hover {
-            background: #059669;
-        }
-        
-        .btn-warning {
-            background: #F59E0B;
             color: white;
         }
         
@@ -377,8 +333,9 @@
             color: white;
         }
         
-        .btn-danger:hover {
-            background: #DC2626;
+        .btn-wa {
+            background: #25D366;
+            color: white;
         }
         
         .btn-sm {
@@ -392,7 +349,6 @@
             display: block;
         }
         
-        /* Badges */
         .badge {
             padding: 5px 12px;
             border-radius: 20px;
@@ -400,17 +356,11 @@
             font-weight: 600;
         }
         
-        .badge-success {
-            background: rgba(16, 185, 129, 0.2);
-            color: #10B981;
+        .badge-info {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3B82F6;
         }
         
-        .badge-warning {
-            background: rgba(245, 158, 11, 0.2);
-            color: #F59E0B;
-        }
-        
-        /* Charts */
         .charts-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
@@ -429,7 +379,6 @@
         .chart-card h3 {
             margin-bottom: 20px;
             font-size: 1.1rem;
-            color: #fff;
         }
         
         canvas {
@@ -437,11 +386,9 @@
             max-height: 300px;
         }
         
-        /* Responsive */
         @media (max-width: 768px) {
             .sidebar {
                 transform: translateX(-100%);
-                transition: transform 0.3s;
             }
             
             .sidebar.open {
@@ -455,23 +402,11 @@
             .charts-grid {
                 grid-template-columns: 1fr;
             }
-            
-            .table-filters {
-                flex-direction: column;
-                width: 100%;
-            }
-            
-            .search-input,
-            .filter-select {
-                width: 100%;
-            }
         }
     </style>
 </head>
 <body>
-    <!-- ============================================ -->
     <!-- LOGIN PAGE -->
-    <!-- ============================================ -->
     <div id="loginPage" class="login-page">
         <div class="login-card">
             <h2>🔐 Admin Login</h2>
@@ -479,16 +414,9 @@
             
             <form id="loginForm" onsubmit="handleLogin(event)">
                 <div style="margin-bottom: 20px;">
-                    <label style="display: block; margin-bottom: 8px; color: #CBD5E1; font-size: 0.9rem;">
-                        Password Admin
-                    </label>
-                    <input 
-                        type="password" 
-                        id="adminPassword" 
-                        class="search-input" 
-                        placeholder="Masukkan password" 
-                        required
-                        style="width: 100%;">
+                    <label style="display: block; margin-bottom: 8px; color: #CBD5E1;">Password Admin</label>
+                    <input type="password" id="adminPassword" class="search-input" 
+                           placeholder="Masukkan password" required style="width: 100%;">
                 </div>
                 
                 <button type="submit" class="btn btn-primary btn-block">
@@ -502,34 +430,20 @@
         </div>
     </div>
 
-    <!-- ============================================ -->
     <!-- ADMIN DASHBOARD -->
-    <!-- ============================================ -->
     <div id="adminDashboard" style="display: none;">
         <div class="admin-container">
             <!-- Sidebar -->
-            <aside class="sidebar" id="sidebar">
+            <aside class="sidebar">
                 <div class="sidebar-header">
                     <h3>📊 Admin Panel</h3>
                     <p>SMK TI Bali Global</p>
                 </div>
                 
                 <ul class="sidebar-menu">
-                    <li>
-                        <a class="active" onclick="showSection('dashboard')">
-                            <span>📈</span> Dashboard
-                        </a>
-                    </li>
-                    <li>
-                        <a onclick="showSection('dataSiswa')">
-                            <span>👥</span> Data Siswa
-                        </a>
-                    </li>
-                    <li>
-                        <a onclick="showSection('statistik')">
-                            <span>📊</span> Statistik
-                        </a>
-                    </li>
+                    <li><a class="active" onclick="showSection('dashboard')">📈 Dashboard</a></li>
+                    <li><a onclick="showSection('dataSiswa')">👥 Data Siswa</a></li>
+                    <li><a onclick="showSection('statistik')">📊 Statistik</a></li>
                 </ul>
                 
                 <div class="sidebar-footer">
@@ -548,7 +462,7 @@
 
             <!-- Main Content -->
             <main class="main-content">
-                <!-- ============ DASHBOARD SECTION ============ -->
+                <!-- Dashboard Section -->
                 <div id="dashboard" class="section active">
                     <h1 class="page-title">Dashboard Admin</h1>
                     <p class="page-subtitle">Ringkasan data pendaftaran siswa</p>
@@ -556,30 +470,26 @@
                     <div class="stats-grid">
                         <div class="stat-card">
                             <div class="stat-icon">👥</div>
-                            <div class="stat-value blue" id="totalSiswa">0</div>
+                            <div class="stat-value" id="totalSiswa">0</div>
                             <div class="stat-label">Total Pendaftar</div>
                         </div>
                         
                         <div class="stat-card">
                             <div class="stat-icon">🎓</div>
-                            <div class="stat-value blue" id="jurusanFavorit">-</div>
+                            <div class="stat-value" id="jurusanFavorit">-</div>
                             <div class="stat-label">Jurusan Terfavorit</div>
                         </div>
                         
                         <div class="stat-card">
                             <div class="stat-icon">⭐</div>
-                            <div class="stat-value blue" id="ekskulFavorit">-</div>
+                            <div class="stat-value" id="ekskulFavorit">-</div>
                             <div class="stat-label">Ekskul Terfavorit</div>
                         </div>
                         
                         <div class="stat-card">
-                            <div class="stat-icon">✅</div>
-                            <div class="stat-value">
-                                <span class="green" id="verifiedCount">0</span>
-                                <span style="color: #8892B0;">/</span>
-                                <span class="orange" id="pendingCount">0</span>
-                            </div>
-                            <div class="stat-label">Verified / Pending</div>
+                            <div class="stat-icon">📅</div>
+                            <div class="stat-value" id="hariIni">0</div>
+                            <div class="stat-label">Pendaftar Hari Ini</div>
                         </div>
                     </div>
                     
@@ -600,7 +510,7 @@
                     </div>
                 </div>
 
-                <!-- ============ DATA SISWA SECTION ============ -->
+                <!-- Data Siswa Section -->
                 <div id="dataSiswa" class="section">
                     <h1 class="page-title">Data Siswa</h1>
                     <p class="page-subtitle">Kelola data pendaftaran siswa</p>
@@ -610,8 +520,7 @@
                             <h3>Daftar Pendaftar</h3>
                             <div class="table-filters">
                                 <input type="text" id="searchInput" class="search-input" 
-                                    placeholder="🔍 Cari nama, NISN, atau asal sekolah..." 
-                                    oninput="filterData()">
+                                    placeholder="🔍 Cari nama, NISN..." oninput="filterData()">
                                 
                                 <select id="filterJurusan" class="filter-select" onchange="filterData()">
                                     <option value="">Semua Jurusan</option>
@@ -640,14 +549,13 @@
                                         <th>Jurusan 1</th>
                                         <th>Jurusan 2</th>
                                         <th>Ekskul</th>
-                                        <th>Status</th>
                                         <th>Tanggal</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody id="tableBody">
                                     <tr>
-                                        <td colspan="11" style="text-align: center; padding: 30px;">
+                                        <td colspan="10" style="text-align: center; padding: 30px;">
                                             ⏳ Memuat data...
                                         </td>
                                     </tr>
@@ -657,7 +565,7 @@
                     </div>
                 </div>
 
-                <!-- ============ STATISTIK SECTION ============ -->
+                <!-- Statistik Section -->
                 <div id="statistik" class="section">
                     <h1 class="page-title">Statistik Detail</h1>
                     <p class="page-subtitle">Analisis data pendaftaran</p>
@@ -682,13 +590,8 @@
         </div>
     </div>
 
-    <!-- ============================================ -->
-    <!-- SCRIPTS -->
-    <!-- ============================================ -->
     <script>
-        // ============================================
-        // FIREBASE CONFIGURATION
-        // ============================================
+        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyBMdBOguRVd02u79idp4xAoTfjDy-h28EQ",
             authDomain: "osisedimahendra.firebaseapp.com",
@@ -698,95 +601,58 @@
             appId: "1:382159139986:web:f33b3470b1136ccf50a24b"
         };
 
-        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
         
-        console.log('✅ Firebase Admin initialized');
-
-        // ============================================
-        // GLOBAL VARIABLES
-        // ============================================
         const ADMIN_PASSWORD = 'admin123';
         let allData = [];
-        let isLoggedIn = false;
 
-        // ============================================
-        // AUTHENTICATION
-        // ============================================
+        // Auth
         function handleLogin(event) {
             event.preventDefault();
-            
             const password = document.getElementById('adminPassword').value;
             
             if (password === ADMIN_PASSWORD) {
-                isLoggedIn = true;
                 sessionStorage.setItem('adminLoggedIn', 'true');
-                
                 document.getElementById('loginPage').style.display = 'none';
                 document.getElementById('adminDashboard').style.display = 'block';
-                
-                showToast('✅ Login berhasil! Selamat datang Admin.', 'success');
+                showToast('✅ Login berhasil!', 'success');
                 loadAllData();
             } else {
-                showToast('❌ Password salah! Silakan coba lagi.', 'error');
+                showToast('❌ Password salah!', 'error');
             }
         }
 
         function handleLogout() {
-            if (confirm('Apakah Anda yakin ingin logout?')) {
-                isLoggedIn = false;
+            if (confirm('Yakin ingin logout?')) {
                 sessionStorage.removeItem('adminLoggedIn');
-                
                 document.getElementById('loginPage').style.display = 'flex';
                 document.getElementById('adminDashboard').style.display = 'none';
-                document.getElementById('adminPassword').value = '';
-                
                 showToast('👋 Logout berhasil!', 'info');
             }
         }
 
-        // Check session on load
         function checkSession() {
             if (sessionStorage.getItem('adminLoggedIn') === 'true') {
-                isLoggedIn = true;
                 document.getElementById('loginPage').style.display = 'none';
                 document.getElementById('adminDashboard').style.display = 'block';
                 loadAllData();
             }
         }
 
-        // ============================================
-        // SECTION NAVIGATION
-        // ============================================
-        function showSection(sectionName) {
-            // Hide all sections
-            document.querySelectorAll('.section').forEach(section => {
-                section.classList.remove('active');
-            });
+        // Navigation
+        function showSection(name) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(name).classList.add('active');
             
-            // Show selected section
-            document.getElementById(sectionName).classList.add('active');
-            
-            // Update active menu
-            document.querySelectorAll('.sidebar-menu a').forEach(link => {
-                link.classList.remove('active');
-            });
-            
-            // Set active on clicked link
-            const links = document.querySelectorAll('.sidebar-menu a');
-            const sectionMap = {
-                'dashboard': 0,
-                'dataSiswa': 1,
-                'statistik': 2
-            };
-            
-            if (sectionMap[sectionName] !== undefined) {
-                links[sectionMap[sectionName]].classList.add('active');
+            document.querySelectorAll('.sidebar-menu a').forEach(a => a.classList.remove('active'));
+            const sections = ['dashboard', 'dataSiswa', 'statistik'];
+            const index = sections.indexOf(name);
+            if (index >= 0) {
+                document.querySelectorAll('.sidebar-menu a')[index].classList.add('active');
             }
             
-            // Redraw charts when switching to statistik
-            if (sectionName === 'statistik') {
+            if (name === 'statistik') {
                 setTimeout(() => {
                     drawJurusanChart('jurusanDetailChart');
                     drawEkskulChart('ekskulDetailChart');
@@ -795,171 +661,74 @@
             }
         }
 
-        // ============================================
-        // LOAD DATA
-        // ============================================
+        // Load Data
         async function loadAllData() {
             try {
-                console.log('📥 Loading data...');
-                
-                // Show loading
-                document.getElementById('totalSiswa').textContent = '...';
-                document.getElementById('jurusanFavorit').textContent = '...';
-                document.getElementById('ekskulFavorit').textContent = '...';
-                document.getElementById('verifiedCount').textContent = '...';
-                document.getElementById('pendingCount').textContent = '...';
-                
-                const snapshot = await db.collection('pendaftaran')
-                    .orderBy('createdAt', 'desc')
-                    .get();
+                const snapshot = await db.collection('pendaftaran').orderBy('createdAt', 'desc').get();
                 
                 allData = [];
-                snapshot.forEach((doc) => {
-                    allData.push({
-                        id: doc.id,
-                        ...doc.data()
-                    });
+                snapshot.forEach(doc => {
+                    allData.push({ id: doc.id, ...doc.data() });
                 });
                 
-                console.log(`✅ Loaded ${allData.length} records`);
-                
-                updateDashboardStats();
+                updateStats();
                 renderTable(allData);
                 drawAllCharts();
                 
             } catch (error) {
-                console.error('❌ Error:', error);
-                showToast('❌ Gagal memuat data: ' + error.message, 'error');
-                
-                // Set default values on error
-                document.getElementById('totalSiswa').textContent = '0';
-                document.getElementById('jurusanFavorit').textContent = '-';
-                document.getElementById('ekskulFavorit').textContent = '-';
-                document.getElementById('verifiedCount').textContent = '0';
-                document.getElementById('pendingCount').textContent = '0';
+                console.error('Error:', error);
+                showToast('❌ Gagal memuat data', 'error');
             }
         }
 
-        // ============================================
-        // UPDATE STATS
-        // ============================================
-        function updateDashboardStats() {
+        function updateStats() {
             const total = allData.length;
             
-            // Count jurusan
             const jurusanCount = {};
             const ekskulCount = {};
-            let verified = 0;
-            let pending = 0;
+            let hariIni = 0;
+            const today = new Date().toLocaleDateString('id-ID');
             
-            allData.forEach((item) => {
-                if (item.jurusan1) {
-                    jurusanCount[item.jurusan1] = (jurusanCount[item.jurusan1] || 0) + 1;
-                }
-                
+            allData.forEach(item => {
+                if (item.jurusan1) jurusanCount[item.jurusan1] = (jurusanCount[item.jurusan1] || 0) + 1;
                 if (item.ekskul && Array.isArray(item.ekskul)) {
-                    item.ekskul.forEach((e) => {
-                        ekskulCount[e] = (ekskulCount[e] || 0) + 1;
-                    });
+                    item.ekskul.forEach(e => ekskulCount[e] = (ekskulCount[e] || 0) + 1);
                 }
-                
-                if (item.status === 'verified') verified++;
-                else pending++;
-            });
-            
-            // Find most popular
-            let topJurusan = '-';
-            let maxJurusan = 0;
-            Object.entries(jurusanCount).forEach(([key, val]) => {
-                if (val > maxJurusan) {
-                    maxJurusan = val;
-                    topJurusan = key;
+                if (item.createdAt) {
+                    const date = new Date(item.createdAt.toDate()).toLocaleDateString('id-ID');
+                    if (date === today) hariIni++;
                 }
             });
             
-            let topEkskul = '-';
-            let maxEkskul = 0;
-            Object.entries(ekskulCount).forEach(([key, val]) => {
-                if (val > maxEkskul) {
-                    maxEkskul = val;
-                    topEkskul = key;
-                }
-            });
+            let topJurusan = '-', maxJ = 0;
+            Object.entries(jurusanCount).forEach(([k, v]) => { if (v > maxJ) { maxJ = v; topJurusan = k; } });
             
-            // Update DOM
+            let topEkskul = '-', maxE = 0;
+            Object.entries(ekskulCount).forEach(([k, v]) => { if (v > maxE) { maxE = v; topEkskul = k; } });
+            
             document.getElementById('totalSiswa').textContent = total;
             document.getElementById('jurusanFavorit').textContent = topJurusan;
             document.getElementById('ekskulFavorit').textContent = topEkskul;
-            document.getElementById('verifiedCount').textContent = verified;
-            document.getElementById('pendingCount').textContent = pending;
+            document.getElementById('hariIni').textContent = hariIni;
         }
 
-        // ============================================
-        // RENDER TABLE
-        // ============================================
         function renderTable(data) {
             const tbody = document.getElementById('tableBody');
             
-            if (!tbody) {
-                console.error('❌ tableBody not found');
-                return;
-            }
-            
             if (data.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="11" style="text-align: center; padding: 30px; color: #8892B0;">
-                            📭 Belum ada data pendaftar
-                        </td>
-                    </tr>
-                `;
+                tbody.innerHTML = '<tr><td colspan="10" style="text-align: center; padding: 30px;">📭 Belum ada data</td></tr>';
                 return;
             }
             
             tbody.innerHTML = data.map((item, index) => {
                 const date = item.createdAt ? 
                     new Date(item.createdAt.toDate()).toLocaleDateString('id-ID', {
-                        day: 'numeric',
-                        month: 'short',
-                        year: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit'
+                        day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
                     }) : '-';
                 
-                const isVerified = item.status === 'verified';
+                const ekskul = (item.ekskul && Array.isArray(item.ekskul)) ? item.ekskul.join(', ') : '-';
                 
-                const statusBadge = isVerified ?
-                    '<span class="badge badge-success">✅ Verified</span>' :
-                    '<span class="badge badge-warning">⏳ Pending</span>';
-                
-                const ekskul = (item.ekskul && Array.isArray(item.ekskul)) ?
-                    item.ekskul.join(', ') : '-';
-                
-                // Tombol aksi
-                let actionButtons = '';
-                
-                if (!isVerified) {
-                    // Jika belum verified, tampilkan tombol verify
-                    actionButtons += `
-                        <button class="btn btn-success btn-sm" onclick="verifyData('${item.id}')" 
-                            style="margin-right: 5px;" title="Verifikasi siswa ini">
-                            ✅ Verifikasi
-                        </button>
-                    `;
-                } else {
-                    // Jika sudah verified, tampilkan badge
-                    actionButtons += `
-                        <span class="badge badge-success" style="margin-right: 5px;">✅ Terverifikasi</span>
-                    `;
-                }
-                
-                // Tombol hapus selalu ada
-                actionButtons += `
-                    <button class="btn btn-danger btn-sm" onclick="deleteData('${item.id}')" 
-                        title="Hapus data">
-                        🗑️ Hapus
-                    </button>
-                `;
+                const waNumber = item.whatsapp ? item.whatsapp.replace(/^0/, '62') : '';
                 
                 return `
                     <tr>
@@ -970,24 +739,22 @@
                         <td>${item.whatsapp || '-'}</td>
                         <td>${item.jurusan1 || '-'}</td>
                         <td>${item.jurusan2 || '-'}</td>
-                        <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${ekskul}">
-                            ${ekskul}
-                        </td>
-                        <td>${statusBadge}</td>
+                        <td>${ekskul}</td>
                         <td>${date}</td>
                         <td style="white-space: nowrap;">
-                            ${actionButtons}
+                            <a href="https://wa.me/${waNumber}" target="_blank" 
+                               class="btn btn-wa btn-sm" style="text-decoration: none;">
+                                💬 WhatsApp
+                            </a>
+                            <button class="btn btn-danger btn-sm" onclick="deleteData('${item.id}')">
+                                🗑️ Hapus
+                            </button>
                         </td>
                     </tr>
                 `;
             }).join('');
-            
-            console.log('✅ Table rendered with ' + data.length + ' rows');
         }
 
-        // ============================================
-        // FILTER DATA
-        // ============================================
         function filterData() {
             const search = (document.getElementById('searchInput')?.value || '').toLowerCase();
             const jurusan = document.getElementById('filterJurusan')?.value || '';
@@ -995,15 +762,14 @@
             let filtered = allData;
             
             if (search) {
-                filtered = filtered.filter((item) =>
+                filtered = filtered.filter(item =>
                     (item.nama && item.nama.toLowerCase().includes(search)) ||
-                    (item.nisn && item.nisn.includes(search)) ||
-                    (item.asalSekolah && item.asalSekolah.toLowerCase().includes(search))
+                    (item.nisn && item.nisn.includes(search))
                 );
             }
             
             if (jurusan) {
-                filtered = filtered.filter((item) =>
+                filtered = filtered.filter(item =>
                     item.jurusan1 === jurusan || item.jurusan2 === jurusan
                 );
             }
@@ -1011,188 +777,46 @@
             renderTable(filtered);
         }
 
-        // ============================================
-        // VERIFY DATA - DIPERBAIKI
-        // ============================================
-        async function verifyData(id) {
-            console.log('🔍 Verifying data with ID:', id);
-            
-            // Cari data siswa berdasarkan ID
-            const siswa = allData.find(item => item.id === id);
-            const namaSiswa = siswa ? siswa.nama : 'siswa ini';
-            
-            // Konfirmasi dengan nama siswa
-            if (!confirm(`✅ Verifikasi pendaftaran atas nama "${namaSiswa}"?\n\nStatus akan berubah menjadi "Terverifikasi".`)) {
-                console.log('❌ Verification cancelled by user');
-                return;
-            }
-            
-            try {
-                console.log('📝 Updating Firestore...');
-                
-                // Update status di Firestore
-                await db.collection('pendaftaran').doc(id).update({
-                    status: 'verified',
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                
-                console.log('✅ Firestore updated successfully');
-                
-                // Update data lokal
-                const index = allData.findIndex(item => item.id === id);
-                if (index !== -1) {
-                    allData[index].status = 'verified';
-                }
-                
-                // Refresh tampilan
-                updateDashboardStats();
-                renderTable(allData);
-                drawAllCharts();
-                
-                showToast(`✅ Pendaftaran "${namaSiswa}" berhasil diverifikasi!`, 'success');
-                
-            } catch (error) {
-                console.error('❌ Error verifying:', error);
-                
-                let errorMessage = 'Gagal verifikasi data';
-                
-                if (error.code === 'permission-denied') {
-                    errorMessage = '❌ Izin ditolak. Cek Firestore rules.';
-                } else if (error.code === 'not-found') {
-                    errorMessage = '❌ Data tidak ditemukan.';
-                } else {
-                    errorMessage = '❌ ' + error.message;
-                }
-                
-                showToast(errorMessage, 'error');
-            }
-        }
-
-        // ============================================
-        // DELETE DATA - DIPERBAIKI
-        // ============================================
         async function deleteData(id) {
-            console.log('🗑️ Deleting data with ID:', id);
-            
-            // Cari data siswa berdasarkan ID
-            const siswa = allData.find(item => item.id === id);
-            const namaSiswa = siswa ? siswa.nama : 'siswa ini';
-            
-            // Konfirmasi dengan peringatan keras
-            if (!confirm(`⚠️ PERINGATAN!\n\nAnda akan menghapus data pendaftaran atas nama:\n"${namaSiswa}"\n\nTindakan ini TIDAK DAPAT dibatalkan!\n\nLanjutkan?`)) {
-                console.log('❌ Deletion cancelled by user');
-                return;
-            }
-            
-            // Double confirm
-            if (!confirm(`🔴 KONFIRMASI TERAKHIR!\n\nHapus data "${namaSiswa}"?\n\nKlik OK untuk menghapus permanen.`)) {
-                console.log('❌ Deletion cancelled on second confirmation');
-                return;
-            }
+            if (!confirm('⚠️ Yakin ingin menghapus data ini?\nTindakan tidak dapat dibatalkan!')) return;
             
             try {
-                console.log('📝 Deleting from Firestore...');
-                
-                // Hapus dari Firestore
                 await db.collection('pendaftaran').doc(id).delete();
-                
-                console.log('✅ Firestore deleted successfully');
-                
-                // Hapus dari data lokal
-                allData = allData.filter(item => item.id !== id);
-                
-                // Refresh tampilan
-                updateDashboardStats();
-                renderTable(allData);
-                drawAllCharts();
-                
-                showToast(`🗑️ Data "${namaSiswa}" berhasil dihapus!`, 'success');
-                
+                showToast('✅ Data berhasil dihapus!', 'success');
+                loadAllData();
             } catch (error) {
-                console.error('❌ Error deleting:', error);
-                
-                let errorMessage = 'Gagal menghapus data';
-                
-                if (error.code === 'permission-denied') {
-                    errorMessage = '❌ Izin ditolak. Cek Firestore rules.';
-                } else if (error.code === 'not-found') {
-                    errorMessage = '❌ Data tidak ditemukan.';
-                } else {
-                    errorMessage = '❌ ' + error.message;
-                }
-                
-                showToast(errorMessage, 'error');
+                showToast('❌ Gagal menghapus', 'error');
             }
         }
 
-        // ============================================
-        // EXPORT EXCEL
-        // ============================================
         function exportToExcel() {
             if (allData.length === 0) {
-                showToast('⚠️ Tidak ada data untuk diexport', 'warning');
+                showToast('⚠️ Tidak ada data', 'warning');
                 return;
             }
             
-            console.log('📥 Exporting ' + allData.length + ' records to Excel...');
-            
-            // Buat header CSV dengan BOM untuk Excel
-            let csv = '\uFEFF';
-            csv += 'No,Nama,NISN,Asal Sekolah,WhatsApp,Email,Jurusan 1,Jurusan 2,Ekskul,Status,Tanggal Daftar\n';
+            let csv = '\uFEFFNo,Nama,NISN,Asal Sekolah,WhatsApp,Email,Jurusan 1,Jurusan 2,Ekskul,Tanggal\n';
             
             allData.forEach((item, index) => {
                 const date = item.createdAt ? 
-                    new Date(item.createdAt.toDate()).toLocaleDateString('id-ID', {
-                        day: 'numeric',
-                        month: 'long',
-                        year: 'numeric'
-                    }) : '-';
+                    new Date(item.createdAt.toDate()).toLocaleDateString('id-ID') : '-';
+                const ekskul = (item.ekskul && Array.isArray(item.ekskul)) ? item.ekskul.join('; ') : '-';
                 
-                const ekskul = (item.ekskul && Array.isArray(item.ekskul)) ? 
-                    item.ekskul.join('; ') : '-';
-                
-                const status = item.status === 'verified' ? 'Terverifikasi' : 'Pending';
-                
-                // Escape quotes dan koma
-                const escapeCsv = (str) => {
-                    if (!str) return '';
-                    str = str.toString();
-                    if (str.includes(',') || str.includes('"') || str.includes('\n')) {
-                        str = '"' + str.replace(/"/g, '""') + '"';
-                    }
-                    return str;
-                };
-                
-                csv += `${index + 1},`;
-                csv += `${escapeCsv(item.nama)},`;
-                csv += `${escapeCsv(item.nisn)},`;
-                csv += `${escapeCsv(item.asalSekolah)},`;
-                csv += `${escapeCsv(item.whatsapp)},`;
-                csv += `${escapeCsv(item.email)},`;
-                csv += `${escapeCsv(item.jurusan1)},`;
-                csv += `${escapeCsv(item.jurusan2)},`;
-                csv += `${escapeCsv(ekskul)},`;
-                csv += `${status},`;
-                csv += `${date}\n`;
+                csv += `${index + 1},"${item.nama || ''}","${item.nisn || ''}","${item.asalSekolah || ''}","${item.whatsapp || ''}","${item.email || ''}","${item.jurusan1 || ''}","${item.jurusan2 || ''}","${ekskul}","${date}"\n`;
             });
             
-            // Download file
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `data-siswa-smkti-${new Date().toISOString().split('T')[0]}.csv`;
-            document.body.appendChild(a);
+            a.download = `data-siswa-${new Date().toISOString().split('T')[0]}.csv`;
             a.click();
-            document.body.removeChild(a);
             URL.revokeObjectURL(url);
             
-            showToast(`✅ ${allData.length} data berhasil diexport ke Excel!`, 'success');
+            showToast('✅ Data diexport!', 'success');
         }
 
-        // ============================================
-        // CHARTS
-        // ============================================
+        // Charts
         function drawAllCharts() {
             drawJurusanChart('jurusanChart');
             drawEkskulChart('ekskulChart');
@@ -1208,10 +832,8 @@
             canvas.height = 300;
             
             const jurusanCount = {};
-            allData.forEach((item) => {
-                if (item.jurusan1) {
-                    jurusanCount[item.jurusan1] = (jurusanCount[item.jurusan1] || 0) + 1;
-                }
+            allData.forEach(item => {
+                if (item.jurusan1) jurusanCount[item.jurusan1] = (jurusanCount[item.jurusan1] || 0) + 1;
             });
             
             const labels = Object.keys(jurusanCount);
@@ -1223,7 +845,7 @@
                 ctx.fillStyle = '#8892B0';
                 ctx.font = '14px Poppins';
                 ctx.textAlign = 'center';
-                ctx.fillText('📭 Belum ada data jurusan', canvas.width / 2, canvas.height / 2);
+                ctx.fillText('Belum ada data', canvas.width / 2, canvas.height / 2);
                 return;
             }
             
@@ -1235,29 +857,18 @@
                 const x = 50 + i * (barWidth + 20);
                 const y = canvas.height - 50 - barHeight;
                 
-                // Gradient
                 const grad = ctx.createLinearGradient(x, y, x, canvas.height - 50);
                 grad.addColorStop(0, '#00F0FF');
                 grad.addColorStop(1, '#0066FF');
                 
-                // Shadow
-                ctx.shadowColor = 'rgba(0, 240, 255, 0.3)';
-                ctx.shadowBlur = 10;
-                
                 ctx.fillStyle = grad;
                 ctx.fillRect(x, y, barWidth, barHeight);
                 
-                // Reset shadow
-                ctx.shadowColor = 'transparent';
-                ctx.shadowBlur = 0;
-                
-                // Value
                 ctx.fillStyle = '#fff';
                 ctx.font = 'bold 12px Poppins';
                 ctx.textAlign = 'center';
                 ctx.fillText(val, x + barWidth / 2, y - 10);
                 
-                // Label
                 ctx.fillStyle = '#8892B0';
                 ctx.font = '10px Poppins';
                 const label = labels[i].length > 15 ? labels[i].substring(0, 15) + '...' : labels[i];
@@ -1274,11 +885,9 @@
             canvas.height = 300;
             
             const ekskulCount = {};
-            allData.forEach((item) => {
+            allData.forEach(item => {
                 if (item.ekskul && Array.isArray(item.ekskul)) {
-                    item.ekskul.forEach((e) => {
-                        ekskulCount[e] = (ekskulCount[e] || 0) + 1;
-                    });
+                    item.ekskul.forEach(e => ekskulCount[e] = (ekskulCount[e] || 0) + 1);
                 }
             });
             
@@ -1290,7 +899,7 @@
                 ctx.fillStyle = '#8892B0';
                 ctx.font = '14px Poppins';
                 ctx.textAlign = 'center';
-                ctx.fillText('📭 Belum ada data ekskul', canvas.width / 2, canvas.height / 2);
+                ctx.fillText('Belum ada data', canvas.width / 2, canvas.height / 2);
                 return;
             }
             
@@ -1327,7 +936,7 @@
             canvas.height = 300;
             
             const dateCount = {};
-            allData.forEach((item) => {
+            allData.forEach(item => {
                 if (item.createdAt) {
                     const date = new Date(item.createdAt.toDate()).toLocaleDateString('id-ID');
                     dateCount[date] = (dateCount[date] || 0) + 1;
@@ -1343,130 +952,70 @@
                 ctx.fillStyle = '#8892B0';
                 ctx.font = '14px Poppins';
                 ctx.textAlign = 'center';
-                ctx.fillText('📅 Data belum cukup untuk grafik tren', canvas.width / 2, canvas.height / 2);
+                ctx.fillText('Data belum cukup', canvas.width / 2, canvas.height / 2);
                 return;
             }
             
             const maxVal = Math.max(...values, 1);
             const xStep = (canvas.width - 100) / (dates.length - 1 || 1);
             
-            // Draw line
             ctx.beginPath();
             ctx.strokeStyle = '#00F0FF';
             ctx.lineWidth = 3;
-            ctx.lineJoin = 'round';
-            
-            // Gradient fill
-            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-            gradient.addColorStop(0, 'rgba(0, 240, 255, 0.2)');
-            gradient.addColorStop(1, 'rgba(0, 240, 255, 0)');
             
             values.forEach((val, i) => {
                 const x = 50 + i * xStep;
                 const y = canvas.height - 50 - (val / maxVal) * (canvas.height - 100);
                 
-                if (i === 0) {
-                    ctx.moveTo(x, y);
-                } else {
-                    ctx.lineTo(x, y);
-                }
-            });
-            
-            ctx.stroke();
-            
-            // Draw points
-            values.forEach((val, i) => {
-                const x = 50 + i * xStep;
-                const y = canvas.height - 50 - (val / maxVal) * (canvas.height - 100);
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
                 
                 ctx.fillStyle = '#00F0FF';
                 ctx.beginPath();
-                ctx.arc(x, y, 6, 0, Math.PI * 2);
+                ctx.arc(x, y, 5, 0, Math.PI * 2);
                 ctx.fill();
                 
-                ctx.fillStyle = '#0A0E27';
-                ctx.beginPath();
-                ctx.arc(x, y, 3, 0, Math.PI * 2);
-                ctx.fill();
-                
-                // Value
                 ctx.fillStyle = '#fff';
-                ctx.font = 'bold 10px Poppins';
+                ctx.font = '10px Poppins';
                 ctx.textAlign = 'center';
                 ctx.fillText(val, x, y - 15);
                 
-                // Date
                 ctx.fillStyle = '#8892B0';
-                ctx.font = '9px Poppins';
                 ctx.fillText(dates[i], x, canvas.height - 20);
             });
+            
+            ctx.stroke();
         }
 
-        // ============================================
-        // TOAST NOTIFICATION
-        // ============================================
         function showToast(message, type = 'info') {
             const existing = document.querySelector('.toast-msg');
             if (existing) existing.remove();
             
-            const colors = {
-                success: '#10B981',
-                error: '#EF4444',
-                warning: '#F59E0B',
-                info: '#3B82F6'
-            };
+            const colors = { success: '#10B981', error: '#EF4444', warning: '#F59E0B', info: '#3B82F6' };
             
             const toast = document.createElement('div');
             toast.className = 'toast-msg';
             toast.textContent = message;
             toast.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                padding: 15px 20px;
-                background: rgba(10, 14, 39, 0.95);
-                backdrop-filter: blur(10px);
-                border-left: 4px solid ${colors[type]};
-                border-radius: 8px;
-                color: white;
-                z-index: 9999;
-                font-family: 'Poppins', sans-serif;
-                font-size: 0.9rem;
-                animation: slideIn 0.3s ease;
+                position: fixed; top: 20px; right: 20px; padding: 15px 20px;
+                background: rgba(10,14,39,0.95); backdrop-filter: blur(10px);
+                border-left: 4px solid ${colors[type]}; border-radius: 8px;
+                color: white; z-index: 9999; font-family: 'Poppins', sans-serif;
+                font-size: 0.9rem; animation: slideIn 0.3s ease;
                 box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-                max-width: 450px;
             `;
-            
             document.body.appendChild(toast);
             
             setTimeout(() => {
                 toast.style.opacity = '0';
                 toast.style.transform = 'translateX(100px)';
                 toast.style.transition = 'all 0.3s';
-                setTimeout(() => {
-                    if (toast.parentNode) toast.remove();
-                }, 300);
+                setTimeout(() => { if (toast.parentNode) toast.remove(); }, 300);
             }, 3000);
         }
 
-        // ============================================
-        // INITIALIZATION
-        // ============================================
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log('🚀 Admin page loaded');
-            checkSession();
-        });
-
-        // Add animation style
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes slideIn {
-                from { opacity: 0; transform: translateX(100px); }
-                to { opacity: 1; transform: translateX(0); }
-            }
-        `;
-        document.head.appendChild(style);
-        
-        console.log('✅ Admin script ready');
-        console.log('📋 Features: Login, Dashboard, Data Siswa, Verifikasi, Hapus, Export Excel, Charts');
+        // Init
+        document.addEventListener('DOMContentLoaded', checkSession);
     </script>
+</body>
+</html>
