@@ -3,21 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pilih Jurusan - SMK TI Bali Global Karangasem</title>
+    <title>SMK TI Bali Global Karangasem - Sekolah Teknologi Terdepan</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+    <!-- Navigation -->
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <a href="index.html" class="nav-logo">
+                <img src="assets/images/logo.png" alt="Logo SMK TI Bali Global" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2245%22 height=%2245%22%3E%3Crect width=%2245%22 height=%2245%22 rx=%2210%22 fill=%22%230066FF%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22white%22 font-size=%2220%22 font-family=%22Arial%22%3ESMK%3C/text%3E%3C/svg%3E'">
                 <span>SMK TI Bali Global</span>
             </a>
+            
             <ul class="nav-menu" id="navMenu">
-                <li><a href="index.html" class="nav-link">Beranda</a></li>
-                <li><a href="pilih-jurusan.html" class="nav-link active">Pilih Jurusan</a></li>
-                <li><a href="pilih-ekskul.html" class="nav-link">Pilih Ekskul</a></li>
-                <li><a href="dashboard-siswa.html" class="nav-link">Dashboard</a></li>
+                <li><a href="#home" class="nav-link active">Beranda</a></li>
+                <li><a href="#jurusan" class="nav-link">Jurusan</a></li>
+                <li><a href="#tentang" class="nav-link">Tentang</a></li>
+                <li><a href="pilih-jurusan.html" class="nav-link">Pendaftaran</a></li>
+                <li><a href="admin.html" class="nav-link">Admin</a></li>
             </ul>
+            
             <button class="hamburger" id="hamburger">
                 <span></span>
                 <span></span>
@@ -26,82 +31,197 @@
         </div>
     </nav>
 
-    <section class="dashboard" style="padding-top: 120px;">
-        <div class="dashboard-container">
-            <div class="dashboard-header">
-                <h1>Form Pemilihan Jurusan</h1>
-                <p style="color: var(--text-gray);">Isi data diri dan pilih jurusan yang kamu minati</p>
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-bg-animation">
+            <div class="hero-circle"></div>
+            <div class="hero-circle"></div>
+            <div class="hero-circle"></div>
+        </div>
+        
+        <div class="hero-container">
+            <div class="hero-content animate-in">
+                <h1>Wujudkan Masa Depan Cemerlang di SMK TI Bali Global</h1>
+                <p>Sekolah teknologi terdepan di Karangasem yang membekali siswa dengan keterampilan digital, kreativitas, dan karakter unggul untuk bersaing di era industri 4.0</p>
+                <div class="hero-buttons">
+                    <a href="pilih-jurusan.html" class="btn btn-primary btn-lg">Daftar Sekarang</a>
+                    <a href="#jurusan" class="btn btn-secondary btn-lg">Lihat Jurusan</a>
+                </div>
             </div>
-
-            <div class="glass-card" style="max-width: 800px; margin: 0 auto;">
-                <form id="jurusanForm">
-                    <div class="form-group">
-                        <label class="form-label" for="nama">Nama Lengkap *</label>
-                        <input type="text" id="nama" class="form-control" placeholder="Masukkan nama lengkap" required>
-                        <div class="invalid-feedback">Nama lengkap minimal 3 karakter</div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label" for="nisn">NISN *</label>
-                        <input type="text" id="nisn" class="form-control" placeholder="Masukkan 10 digit NISN" maxlength="10" required>
-                        <div class="invalid-feedback">NISN harus 10 digit angka</div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label" for="asalSekolah">Asal Sekolah *</label>
-                        <input type="text" id="asalSekolah" class="form-control" placeholder="Masukkan asal sekolah" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label" for="whatsapp">Nomor WhatsApp *</label>
-                        <input type="text" id="whatsapp" class="form-control" placeholder="Contoh: 08123456789" required>
-                        <div class="invalid-feedback">Nomor WhatsApp tidak valid</div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label" for="email">Email *</label>
-                        <input type="email" id="email" class="form-control" placeholder="contoh@email.com" required>
-                        <div class="invalid-feedback">Email tidak valid</div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label" for="jurusan1">Pilihan Jurusan 1 *</label>
-                        <select id="jurusan1" class="form-control" required>
-                            <option value="">-- Pilih Jurusan --</option>
-                            <option value="Rekayasa Perangkat Lunak (RPL)">Rekayasa Perangkat Lunak (RPL)</option>
-                            <option value="Teknik Komputer dan Jaringan (TKJ)">Teknik Komputer dan Jaringan (TKJ)</option>
-                            <option value="Multimedia">Multimedia</option>
-                            <option value="Akuntansi dan Keuangan Lembaga (AKL)">Akuntansi dan Keuangan Lembaga (AKL)</option>
-                            <option value="Perhotelan">Perhotelan</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label" for="jurusan2">Pilihan Jurusan 2 *</label>
-                        <select id="jurusan2" class="form-control" required>
-                            <option value="">-- Pilih Jurusan --</option>
-                            <option value="Rekayasa Perangkat Lunak (RPL)">Rekayasa Perangkat Lunak (RPL)</option>
-                            <option value="Teknik Komputer dan Jaringan (TKJ)">Teknik Komputer dan Jaringan (TKJ)</option>
-                            <option value="Multimedia">Multimedia</option>
-                            <option value="Akuntansi dan Keuangan Lembaga (AKL)">Akuntansi dan Keuangan Lembaga (AKL)</option>
-                            <option value="Perhotelan">Perhotelan</option>
-                        </select>
-                        <div class="invalid-feedback">Jurusan pertama dan kedua tidak boleh sama</div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label" for="alasan">Alasan Memilih Jurusan *</label>
-                        <textarea id="alasan" class="form-control" placeholder="Jelaskan alasan kamu memilih jurusan tersebut (minimal 10 karakter)" required></textarea>
-                        <div class="invalid-feedback">Alasan minimal 10 karakter</div>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary btn-lg btn-block">
-                        Daftar & Lanjut Pilih Ekskul
-                    </button>
-                </form>
+            <div class="hero-image">
+                <img src="assets/images/hero-student.png" alt="Siswa SMK TI Bali Global" onerror="this.style.display='none'">
             </div>
         </div>
     </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-number">0</div>
+                <div class="stat-label">Total Pendaftar</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">-</div>
+                <div class="stat-label">Jurusan Terfavorit</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">-</div>
+                <div class="stat-label">Ekskul Terfavorit</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">2024</div>
+                <div class="stat-label">Tahun Ajaran</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Jurusan Section -->
+    <section class="jurusan-section" id="jurusan">
+        <div class="section-header">
+            <h2>Jurusan Unggulan</h2>
+            <p>Pilih jurusan sesuai minat dan bakatmu untuk masa depan yang gemilang</p>
+        </div>
+        
+        <div class="jurusan-grid">
+            <!-- RPL -->
+            <div class="jurusan-card">
+                <img src="assets/images/rpl.jpg" alt="RPL" class="jurusan-card-image" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22350%22 height=%22200%22%3E%3Crect width=%22350%22 height=%22200%22 fill=%22%230066FF%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22white%22 font-size=%2224%22%3ERPL%3C/text%3E%3C/svg%3E'">
+                <div class="jurusan-card-body">
+                    <h3>Rekayasa Perangkat Lunak (RPL)</h3>
+                    <p>Mempelajari pengembangan software, aplikasi mobile, dan website modern menggunakan teknologi terkini.</p>
+                    <div class="jurusan-skills">
+                        <span class="skill-tag">HTML/CSS</span>
+                        <span class="skill-tag">JavaScript</span>
+                        <span class="skill-tag">React</span>
+                        <span class="skill-tag">Python</span>
+                        <span class="skill-tag">Database</span>
+                    </div>
+                    <div class="jurusan-prospek">
+                        <h4>Prospek Kerja:</h4>
+                        <ul>
+                            <li>Software Developer</li>
+                            <li>Web Developer</li>
+                            <li>Mobile App Developer</li>
+                            <li>UI/UX Designer</li>
+                        </ul>
+                    </div>
+                    <a href="pilih-jurusan.html" class="btn btn-primary btn-block">Pilih Jurusan</a>
+                </div>
+            </div>
+            
+            <!-- TKJ -->
+            <div class="jurusan-card">
+                <img src="assets/images/tkj.jpg" alt="TKJ" class="jurusan-card-image" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22350%22 height=%22200%22%3E%3Crect width=%22350%22 height=%22200%22 fill=%22%2300F0FF%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22white%22 font-size=%2224%22%3ETKJ%3C/text%3E%3C/svg%3E'">
+                <div class="jurusan-card-body">
+                    <h3>Teknik Komputer dan Jaringan (TKJ)</h3>
+                    <p>Fokus pada infrastruktur jaringan, keamanan cyber, dan administrasi server untuk dunia digital.</p>
+                    <div class="jurusan-skills">
+                        <span class="skill-tag">Cisco</span>
+                        <span class="skill-tag">Mikrotik</span>
+                        <span class="skill-tag">Linux</span>
+                        <span class="skill-tag">Cyber Security</span>
+                        <span class="skill-tag">Cloud</span>
+                    </div>
+                    <div class="jurusan-prospek">
+                        <h4>Prospek Kerja:</h4>
+                        <ul>
+                            <li>Network Administrator</li>
+                            <li>Cyber Security Analyst</li>
+                            <li>Cloud Engineer</li>
+                            <li>IT Support</li>
+                        </ul>
+                    </div>
+                    <a href="pilih-jurusan.html" class="btn btn-primary btn-block">Pilih Jurusan</a>
+                </div>
+            </div>
+            
+            <!-- Multimedia -->
+            <div class="jurusan-card">
+                <img src="assets/images/multimedia.jpg" alt="Multimedia" class="jurusan-card-image" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22350%22 height=%22200%22%3E%3Crect width=%22350%22 height=%22200%22 fill=%22%23001A4D%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22white%22 font-size=%2224%22%3EMULTIMEDIA%3C/text%3E%3C/svg%3E'">
+                <div class="jurusan-card-body">
+                    <h3>Multimedia</h3>
+                    <p>Menggabungkan kreativitas dan teknologi dalam desain grafis, animasi, dan produksi video profesional.</p>
+                    <div class="jurusan-skills">
+                        <span class="skill-tag">Photoshop</span>
+                        <span class="skill-tag">Illustrator</span>
+                        <span class="skill-tag">After Effects</span>
+                        <span class="skill-tag">Blender</span>
+                        <span class="skill-tag">Premiere</span>
+                    </div>
+                    <div class="jurusan-prospek">
+                        <h4>Prospek Kerja:</h4>
+                        <ul>
+                            <li>Graphic Designer</li>
+                            <li>Animator</li>
+                            <li>Video Editor</li>
+                            <li>Content Creator</li>
+                        </ul>
+                    </div>
+                    <a href="pilih-jurusan.html" class="btn btn-primary btn-block">Pilih Jurusan</a>
+                </div>
+            </div>
+            
+            <!-- AKL -->
+            <div class="jurusan-card">
+                <img src="assets/images/akl.jpg" alt="AKL" class="jurusan-card-image" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22350%22 height=%22200%22%3E%3Crect width=%22350%22 height=%22200%22 fill=%22%2310B981%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22white%22 font-size=%2224%22%3EAKL%3C/text%3E%3C/svg%3E'">
+                <div class="jurusan-card-body">
+                    <h3>Akuntansi dan Keuangan Lembaga (AKL)</h3>
+                    <p>Mempelajari akuntansi modern, software keuangan, dan manajemen bisnis untuk karir di dunia korporat.</p>
+                    <div class="jurusan-skills">
+                        <span class="skill-tag">MYOB</span>
+                        <span class="skill-tag">Excel</span>
+                        <span class="skill-tag">Accurate</span>
+                        <span class="skill-tag">Pajak</span>
+                        <span class="skill-tag">Audit</span>
+                    </div>
+                    <div class="jurusan-prospek">
+                        <h4>Prospek Kerja:</h4>
+                        <ul>
+                            <li>Akuntan</li>
+                            <li>Auditor</li>
+                            <li>Tax Consultant</li>
+                            <li>Finance Manager</li>
+                        </ul>
+                    </div>
+                    <a href="pilih-jurusan.html" class="btn btn-primary btn-block">Pilih Jurusan</a>
+                </div>
+            </div>
+            
+            <!-- Perhotelan -->
+            <div class="jurusan-card">
+                <img src="assets/images/perhotelan.jpg" alt="Perhotelan" class="jurusan-card-image" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22350%22 height=%22200%22%3E%3Crect width=%22350%22 height=%22200%22 fill=%22%23F59E0B%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22white%22 font-size=%2224%22%3EPERHOTELAN%3C/text%3E%3C/svg%3E'">
+                <div class="jurusan-card-body">
+                    <h3>Perhotelan</h3>
+                    <p>Belajar hospitality management, layanan prima, dan operasional hotel bertaraf internasional.</p>
+                    <div class="jurusan-skills">
+                        <span class="skill-tag">Hospitality</span>
+                        <span class="skill-tag">F&B Service</span>
+                        <span class="skill-tag">Housekeeping</span>
+                        <span class="skill-tag">Front Office</span>
+                        <span class="skill-tag">Event Management</span>
+                    </div>
+                    <div class="jurusan-prospek">
+                        <h4>Prospek Kerja:</h4>
+                        <ul>
+                            <li>Hotel Manager</li>
+                            <li>Chef</li>
+                            <li>Event Planner</li>
+                            <li>Travel Consultant</li>
+                        </ul>
+                    </div>
+                    <a href="pilih-jurusan.html" class="btn btn-primary btn-block">Pilih Jurusan</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer style="background: var(--gradient-2); padding: 3rem 0; text-align: center; margin-top: 4rem;">
+        <div class="nav-container">
+            <p style="color: var(--text-gray);">© 2024 SMK TI Bali Global Karangasem. All rights reserved.</p>
+        </div>
+    </footer>
 
     <script type="module" src="js/script.js"></script>
 </body>
