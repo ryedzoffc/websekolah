@@ -3,222 +3,1046 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SMK TI Bali Global Karangasem - Sekolah Teknologi Terdepan</title>
+    <title>Admin Dashboard - SMK TI Bali Global Karangasem</title>
     
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     
-    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg: #0A0E27;
+            --card: rgba(255,255,255,0.03);
+            --border: rgba(255,255,255,0.08);
+            --text: #CBD5E1;
+            --text-secondary: #8892B0;
+            --blue: #00F0FF;
+            --blue-dark: #0066FF;
+            --green: #10B981;
+            --red: #EF4444;
+            --orange: #F59E0B;
+            --gradient: linear-gradient(135deg, #0066FF, #00F0FF);
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg);
+            color: #fff;
+            min-height: 100vh;
+        }
+        
+        /* ============ LOGIN ============ */
+        .login-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0A0E27 0%, #1A1A3E 100%);
+        }
+        
+        .login-box {
+            background: rgba(255,255,255,0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 24px;
+            padding: 40px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        }
+        
+        .login-box h1 {
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .login-box .subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+            font-size: 0.9rem;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px rgba(0,240,255,0.1);
+        }
+        
+        .form-input::placeholder {
+            color: var(--text-secondary);
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: var(--gradient);
+            color: #fff;
+            width: 100%;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,102,255,0.3);
+        }
+        
+        .btn-danger {
+            background: var(--red);
+            color: #fff;
+        }
+        
+        .btn-danger:hover {
+            background: #DC2626;
+        }
+        
+        .btn-success {
+            background: var(--green);
+            color: #fff;
+        }
+        
+        .btn-success:hover {
+            background: #059669;
+        }
+        
+        .btn-wa {
+            background: #25D366;
+            color: #fff;
+        }
+        
+        .btn-wa:hover {
+            background: #1fb855;
+        }
+        
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            border-radius: 8px;
+        }
+        
+        .btn-xs {
+            padding: 4px 10px;
+            font-size: 0.75rem;
+            border-radius: 6px;
+        }
+        
+        /* ============ ADMIN LAYOUT ============ */
+        .admin-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            width: 260px;
+            background: rgba(10,14,39,0.98);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(255,255,255,0.08);
+            padding: 24px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+        }
+        
+        .sidebar-brand {
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+        
+        .sidebar-brand h2 {
+            font-size: 1.2rem;
+            color: var(--blue);
+        }
+        
+        .sidebar-brand span {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+        }
+        
+        .sidebar-nav {
+            list-style: none;
+            flex: 1;
+        }
+        
+        .sidebar-nav li {
+            margin-bottom: 4px;
+        }
+        
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .sidebar-nav a:hover,
+        .sidebar-nav a.active {
+            background: rgba(0,240,255,0.08);
+            color: var(--blue);
+        }
+        
+        .sidebar-footer {
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+        }
+        
+        .user-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .user-name {
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+        
+        .user-role {
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+        }
+        
+        /* ============ MAIN CONTENT ============ */
+        .main {
+            flex: 1;
+            margin-left: 260px;
+            padding: 32px;
+        }
+        
+        .page-header {
+            margin-bottom: 32px;
+        }
+        
+        .page-header h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .page-header p {
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+        
+        .section {
+            display: none;
+        }
+        
+        .section.active {
+            display: block;
+        }
+        
+        /* ============ STATS ============ */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+        
+        .stat-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px 24px;
+            transition: all 0.3s;
+        }
+        
+        .stat-card:hover {
+            border-color: var(--blue);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+        }
+        
+        .stat-card .icon {
+            font-size: 1.8rem;
+            margin-bottom: 12px;
+        }
+        
+        .stat-card .value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--blue);
+        }
+        
+        .stat-card .label {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-top: 4px;
+        }
+        
+        /* ============ TABLE ============ */
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        
+        .card-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        
+        .card-header h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .card-body {
+            overflow-x: auto;
+        }
+        
+        .filters {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .input-search {
+            padding: 8px 14px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.85rem;
+            min-width: 200px;
+        }
+        
+        .input-search::placeholder {
+            color: var(--text-secondary);
+        }
+        
+        .select-filter {
+            padding: 8px 14px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.85rem;
+        }
+        
+        .select-filter option {
+            background: #1A1A3E;
+            color: #fff;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        table th {
+            background: rgba(255,255,255,0.04);
+            padding: 14px 16px;
+            text-align: left;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--blue);
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+        
+        table td {
+            padding: 12px 16px;
+            font-size: 0.83rem;
+            color: var(--text);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            white-space: nowrap;
+        }
+        
+        table tbody tr:hover {
+            background: rgba(0,240,255,0.02);
+        }
+        
+        .badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .badge-info {
+            background: rgba(59,130,246,0.15);
+            color: #3B82F6;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 6px;
+        }
+        
+        /* ============ CHARTS ============ */
+        .charts-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+        
+        .chart-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+        }
+        
+        .chart-card h3 {
+            font-size: 1rem;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+        
+        canvas {
+            width: 100% !important;
+            max-height: 280px;
+        }
+        
+        /* ============ TOAST ============ */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 14px 20px;
+            background: rgba(10,14,39,0.98);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            color: #fff;
+            z-index: 9999;
+            font-size: 0.88rem;
+            animation: slideLeft 0.3s ease;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            max-width: 380px;
+        }
+        
+        .toast-success { border-left: 4px solid var(--green); }
+        .toast-error { border-left: 4px solid var(--red); }
+        .toast-warning { border-left: 4px solid var(--orange); }
+        
+        @keyframes slideLeft {
+            from { opacity: 0; transform: translateX(80px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        /* ============ MOBILE ============ */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                flex-direction: row;
+                flex-wrap: wrap;
+                padding: 16px;
+            }
+            
+            .sidebar-nav {
+                display: flex;
+                gap: 8px;
+                flex-wrap: wrap;
+            }
+            
+            .sidebar-footer {
+                display: none;
+            }
+            
+            .main {
+                margin-left: 0;
+                padding: 20px;
+            }
+            
+            .charts-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar" id="navbar">
-        <div class="nav-container">
-            <a href="index.html" class="nav-logo">
-                <span>🔷 SMK TI Bali Global</span>
-            </a>
-            
-            <ul class="nav-menu" id="navMenu">
-                <li><a href="index.html" class="nav-link active">Beranda</a></li>
-                <li><a href="#jurusan" class="nav-link">Jurusan</a></li>
-                <li><a href="pilih-jurusan.html" class="nav-link">Pendaftaran</a></li>
-                <li><a href="dashboard-siswa.html" class="nav-link">Dashboard</a></li>
-                <li><a href="admin.html" class="nav-link">Admin</a></li>
-            </ul>
-            
-            <button class="hamburger" id="hamburger">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
+    
+    <!-- ==================== LOGIN ==================== -->
+    <div id="loginPage" class="login-wrapper">
+        <div class="login-box">
+            <h1>🔐 Admin Panel</h1>
+            <p class="subtitle">SMK TI Bali Global Karangasem</p>
+            <form onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="pw" class="form-input" placeholder="Masukkan password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">🔓 Masuk Dashboard</button>
+            </form>
+            <p style="text-align:center; margin-top:16px; color:var(--text-secondary); font-size:0.8rem;">
+                Default: <strong style="color:var(--blue);">admin123</strong>
+            </p>
         </div>
-    </nav>
+    </div>
 
-    <!-- Hero Section -->
-    <section class="hero" id="home">
-        <div class="hero-bg-animation">
-            <div class="hero-circle"></div>
-            <div class="hero-circle"></div>
-            <div class="hero-circle"></div>
+    <!-- ==================== DASHBOARD ==================== -->
+    <div id="app" style="display:none;">
+        <div class="admin-layout">
+            
+            <!-- SIDEBAR -->
+            <aside class="sidebar">
+                <div class="sidebar-brand">
+                    <h2>📊 Admin Panel</h2>
+                    <span>SMK TI Bali Global</span>
+                </div>
+                
+                <ul class="sidebar-nav">
+                    <li><a class="active" onclick="nav('dashboard')">📈 Dashboard</a></li>
+                    <li><a onclick="nav('siswa')">👥 Data Siswa</a></li>
+                    <li><a onclick="nav('statistik')">📊 Statistik</a></li>
+                </ul>
+                
+                <div class="sidebar-footer">
+                    <div class="user-badge">
+                        <div class="user-avatar">A</div>
+                        <div>
+                            <div class="user-name">Admin</div>
+                            <div class="user-role">Administrator</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-danger btn-sm" style="width:100%;" onclick="logout()">🚪 Logout</button>
+                </div>
+            </aside>
+
+            <!-- MAIN -->
+            <main class="main">
+                
+                <!-- DASHBOARD SECTION -->
+                <div id="sec-dashboard" class="section active">
+                    <div class="page-header">
+                        <h2>Dashboard</h2>
+                        <p>Ringkasan pendaftaran siswa</p>
+                    </div>
+                    
+                    <div class="stats-row">
+                        <div class="stat-card">
+                            <div class="icon">👥</div>
+                            <div class="value" id="sTotal">0</div>
+                            <div class="label">Total Pendaftar</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="icon">🎓</div>
+                            <div class="value" id="sJurusan" style="font-size:1.2rem;">-</div>
+                            <div class="label">Jurusan Terfavorit</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="icon">⭐</div>
+                            <div class="value" id="sEkskul" style="font-size:1.2rem;">-</div>
+                            <div class="label">Ekskul Terfavorit</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="icon">📅</div>
+                            <div class="value" id="sToday">0</div>
+                            <div class="label">Hari Ini</div>
+                        </div>
+                    </div>
+                    
+                    <div class="charts-row">
+                        <div class="chart-card">
+                            <h3>📊 Jurusan</h3>
+                            <canvas id="chartJurusan"></canvas>
+                        </div>
+                        <div class="chart-card">
+                            <h3>🎯 Ekskul</h3>
+                            <canvas id="chartEkskul"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-card">
+                        <h3>📅 Tren Pendaftaran</h3>
+                        <canvas id="chartTrend"></canvas>
+                    </div>
+                </div>
+
+                <!-- DATA SISWA SECTION -->
+                <div id="sec-siswa" class="section">
+                    <div class="page-header">
+                        <h2>Data Siswa</h2>
+                        <p>Kelola pendaftaran</p>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Daftar Pendaftar</h3>
+                            <div class="filters">
+                                <input type="text" class="input-search" id="searchInput" placeholder="🔍 Cari..." oninput="filter()">
+                                <select class="select-filter" id="filterJurusan" onchange="filter()">
+                                    <option value="">Semua Jurusan</option>
+                                    <option value="RPL">RPL</option>
+                                    <option value="TKJ">TKJ</option>
+                                    <option value="Multimedia">Multimedia</option>
+                                    <option value="AKL">AKL</option>
+                                    <option value="Perhotelan">Perhotelan</option>
+                                </select>
+                                <button class="btn btn-success btn-sm" onclick="exportExcel()">📥 Export</button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Nama</th>
+                                        <th>NISN</th>
+                                        <th>Sekolah</th>
+                                        <th>WA</th>
+                                        <th>Jurusan 1</th>
+                                        <th>Ekskul</th>
+                                        <th>Tgl Daftar</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tb"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STATISTIK SECTION -->
+                <div id="sec-statistik" class="section">
+                    <div class="page-header">
+                        <h2>Statistik</h2>
+                        <p>Analisis detail</p>
+                    </div>
+                    
+                    <div class="charts-row">
+                        <div class="chart-card">
+                            <h3>📊 Jurusan Detail</h3>
+                            <canvas id="chartJurusan2"></canvas>
+                        </div>
+                        <div class="chart-card">
+                            <h3>🎯 Ekskul Detail</h3>
+                            <canvas id="chartEkskul2"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-card">
+                        <h3>📅 Tren Detail</h3>
+                        <canvas id="chartTrend2"></canvas>
+                    </div>
+                </div>
+                
+            </main>
         </div>
+    </div>
+
+    <script>
+        // ============ FIREBASE ============
+        const fb = {
+            apiKey: "AIzaSyBMdBOguRVd02u79idp4xAoTfjDy-h28EQ",
+            authDomain: "osisedimahendra.firebaseapp.com",
+            projectId: "osisedimahendra",
+            storageBucket: "osisedimahendra.firebasestorage.app",
+            messagingSenderId: "382159139986",
+            appId: "1:382159139986:web:f33b3470b1136ccf50a24b"
+        };
+        firebase.initializeApp(fb);
+        const db = firebase.firestore();
         
-        <div class="hero-container">
-            <div class="hero-content animate-in">
-                <h1>Wujudkan Masa Depan Cemerlang di SMK TI Bali Global</h1>
-                <p>Sekolah teknologi terdepan di Karangasem yang membekali siswa dengan keterampilan digital, kreativitas, dan karakter unggul untuk bersaing di era industri 4.0</p>
-                <div class="hero-buttons">
-                    <a href="pilih-jurusan.html" class="btn btn-primary btn-lg">Daftar Sekarang 🚀</a>
-                    <a href="#jurusan" class="btn btn-secondary btn-lg">Lihat Jurusan</a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Stats Section -->
-    <section class="stats-section">
-        <div class="stats-container">
-            <div class="stat-card">
-                <div class="stat-number" id="totalPendaftar">0</div>
-                <div class="stat-label">Total Pendaftar</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="jurusanFavorit">-</div>
-                <div class="stat-label">Jurusan Terfavorit</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="ekskulFavorit">-</div>
-                <div class="stat-label">Ekskul Terfavorit</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">2026</div>
-                <div class="stat-label">Tahun Ajaran</div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Jurusan Section -->
-    <section class="jurusan-section" id="jurusan">
-        <div class="section-header">
-            <h2>Jurusan Unggulan</h2>
-            <p>Pilih jurusan sesuai minat dan bakatmu untuk masa depan yang gemilang</p>
-        </div>
+        // ============ STATE ============
+        const PASS = 'admin123';
+        let data = [];
         
-        <div class="jurusan-grid">
-            <!-- RPL -->
-            <div class="jurusan-card">
-                <div class="jurusan-card-body">
-                    <h3>💻 Rekayasa Perangkat Lunak (RPL)</h3>
-                    <p>Mempelajari pengembangan software, aplikasi mobile, dan website modern menggunakan teknologi terkini.</p>
-                    <div class="jurusan-skills">
-                        <span class="skill-tag">HTML/CSS</span>
-                        <span class="skill-tag">JavaScript</span>
-                        <span class="skill-tag">React</span>
-                        <span class="skill-tag">Python</span>
-                        <span class="skill-tag">Database</span>
-                    </div>
-                    <div class="jurusan-prospek">
-                        <h4>Prospek Kerja:</h4>
-                        <ul>
-                            <li>Software Developer</li>
-                            <li>Web Developer</li>
-                            <li>Mobile App Developer</li>
-                            <li>UI/UX Designer</li>
-                        </ul>
-                    </div>
-                    <a href="pilih-jurusan.html" class="btn btn-primary btn-block">Pilih Jurusan</a>
-                </div>
-            </div>
+        // ============ AUTH ============
+        function handleLogin(e) {
+            e.preventDefault();
+            if (document.getElementById('pw').value === PASS) {
+                sessionStorage.setItem('adm', '1');
+                document.getElementById('loginPage').style.display = 'none';
+                document.getElementById('app').style.display = 'block';
+                toast('✅ Login berhasil', 'success');
+                load();
+            } else {
+                toast('❌ Password salah', 'error');
+            }
+        }
+        
+        function logout() {
+            if (confirm('Logout?')) {
+                sessionStorage.removeItem('adm');
+                document.getElementById('loginPage').style.display = 'flex';
+                document.getElementById('app').style.display = 'none';
+            }
+        }
+        
+        function nav(name) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById('sec-' + name).classList.add('active');
             
-            <!-- TKJ -->
-            <div class="jurusan-card">
-                <div class="jurusan-card-body">
-                    <h3>🌐 Teknik Komputer dan Jaringan (TKJ)</h3>
-                    <p>Fokus pada infrastruktur jaringan, keamanan cyber, dan administrasi server.</p>
-                    <div class="jurusan-skills">
-                        <span class="skill-tag">Cisco</span>
-                        <span class="skill-tag">Mikrotik</span>
-                        <span class="skill-tag">Linux</span>
-                        <span class="skill-tag">Cyber Security</span>
-                        <span class="skill-tag">Cloud</span>
-                    </div>
-                    <div class="jurusan-prospek">
-                        <h4>Prospek Kerja:</h4>
-                        <ul>
-                            <li>Network Administrator</li>
-                            <li>Cyber Security Analyst</li>
-                            <li>Cloud Engineer</li>
-                            <li>IT Support</li>
-                        </ul>
-                    </div>
-                    <a href="pilih-jurusan.html" class="btn btn-primary btn-block">Pilih Jurusan</a>
-                </div>
-            </div>
+            document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
+            const idx = ['dashboard','siswa','statistik'].indexOf(name);
+            if (idx >= 0) document.querySelectorAll('.sidebar-nav a')[idx].classList.add('active');
             
-            <!-- Multimedia -->
-            <div class="jurusan-card">
-                <div class="jurusan-card-body">
-                    <h3>🎨 Multimedia</h3>
-                    <p>Menggabungkan kreativitas dan teknologi dalam desain grafis, animasi, dan produksi video.</p>
-                    <div class="jurusan-skills">
-                        <span class="skill-tag">Photoshop</span>
-                        <span class="skill-tag">Illustrator</span>
-                        <span class="skill-tag">After Effects</span>
-                        <span class="skill-tag">Blender</span>
-                        <span class="skill-tag">Premiere</span>
-                    </div>
-                    <div class="jurusan-prospek">
-                        <h4>Prospek Kerja:</h4>
-                        <ul>
-                            <li>Graphic Designer</li>
-                            <li>Animator</li>
-                            <li>Video Editor</li>
-                            <li>Content Creator</li>
-                        </ul>
-                    </div>
-                    <a href="pilih-jurusan.html" class="btn btn-primary btn-block">Pilih Jurusan</a>
-                </div>
-            </div>
+            if (name === 'statistik') setTimeout(() => { charts('chartJurusan2','chartEkskul2','chartTrend2'); }, 200);
+        }
+        
+        // ============ LOAD DATA ============
+        async function load() {
+            try {
+                const snap = await db.collection('pendaftaran').orderBy('createdAt','desc').get();
+                data = [];
+                snap.forEach(d => data.push({ id: d.id, ...d.data() }));
+                
+                stats();
+                table(data);
+                charts('chartJurusan','chartEkskul','chartTrend');
+            } catch(e) {
+                toast('❌ Gagal load: ' + e.message, 'error');
+            }
+        }
+        
+        function stats() {
+            const t = data.length;
+            const jc = {}, ec = {};
+            let today = 0;
+            const td = new Date().toLocaleDateString('id-ID');
             
-            <!-- AKL -->
-            <div class="jurusan-card">
-                <div class="jurusan-card-body">
-                    <h3>📊 Akuntansi dan Keuangan Lembaga (AKL)</h3>
-                    <p>Mempelajari akuntansi modern, software keuangan, dan manajemen bisnis.</p>
-                    <div class="jurusan-skills">
-                        <span class="skill-tag">MYOB</span>
-                        <span class="skill-tag">Excel</span>
-                        <span class="skill-tag">Accurate</span>
-                        <span class="skill-tag">Pajak</span>
-                        <span class="skill-tag">Audit</span>
-                    </div>
-                    <div class="jurusan-prospek">
-                        <h4>Prospek Kerja:</h4>
-                        <ul>
-                            <li>Akuntan</li>
-                            <li>Auditor</li>
-                            <li>Tax Consultant</li>
-                            <li>Finance Manager</li>
-                        </ul>
-                    </div>
-                    <a href="pilih-jurusan.html" class="btn btn-primary btn-block">Pilih Jurusan</a>
-                </div>
-            </div>
+            data.forEach(d => {
+                if (d.jurusan1) jc[d.jurusan1] = (jc[d.jurusan1]||0)+1;
+                if (d.ekskul && Array.isArray(d.ekskul)) d.ekskul.forEach(e => ec[e] = (ec[e]||0)+1);
+                if (d.createdAt && new Date(d.createdAt.toDate()).toLocaleDateString('id-ID') === td) today++;
+            });
             
-            <!-- Perhotelan -->
-            <div class="jurusan-card">
-                <div class="jurusan-card-body">
-                    <h3>🏨 Perhotelan</h3>
-                    <p>Belajar hospitality management, layanan prima, dan operasional hotel bertaraf internasional.</p>
-                    <div class="jurusan-skills">
-                        <span class="skill-tag">Hospitality</span>
-                        <span class="skill-tag">F&B Service</span>
-                        <span class="skill-tag">Housekeeping</span>
-                        <span class="skill-tag">Front Office</span>
-                        <span class="skill-tag">Event</span>
-                    </div>
-                    <div class="jurusan-prospek">
-                        <h4>Prospek Kerja:</h4>
-                        <ul>
-                            <li>Hotel Manager</li>
-                            <li>Chef</li>
-                            <li>Event Planner</li>
-                            <li>Travel Consultant</li>
-                        </ul>
-                    </div>
-                    <a href="pilih-jurusan.html" class="btn btn-primary btn-block">Pilih Jurusan</a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer style="background: var(--gradient-2); padding: 3rem 0; text-align: center; margin-top: 4rem;">
-        <p style="color: var(--text-gray);">© 2026 SMK TI Bali Global Karangasem. All rights reserved.</p>
-    </footer>
-
-    <!-- Scripts -->
-    <script src="js/firebase-config.js"></script>
-    <script src="js/script.js"></script>
+            let tj = '-', mj = 0;
+            Object.entries(jc).forEach(([k,v]) => { if(v>mj){ mj=v; tj=k; } });
+            
+            let te = '-', me = 0;
+            Object.entries(ec).forEach(([k,v]) => { if(v>me){ me=v; te=k; } });
+            
+            document.getElementById('sTotal').textContent = t;
+            document.getElementById('sJurusan').textContent = tj;
+            document.getElementById('sEkskul').textContent = te;
+            document.getElementById('sToday').textContent = today;
+        }
+        
+        function table(arr) {
+            const tb = document.getElementById('tb');
+            if (!arr.length) {
+                tb.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:40px;">📭 Belum ada data</td></tr>';
+                return;
+            }
+            
+            tb.innerHTML = arr.map((d,i) => {
+                const dt = d.createdAt ? new Date(d.createdAt.toDate()).toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) : '-';
+                const ek = (d.ekskul && Array.isArray(d.ekskul)) ? d.ekskul.join(', ') : '-';
+                const wa = d.whatsapp ? d.whatsapp.replace(/^0/,'62') : '';
+                
+                return `<tr>
+                    <td>${i+1}</td>
+                    <td><strong>${d.nama||'-'}</strong></td>
+                    <td>${d.nisn||'-'}</td>
+                    <td>${d.asalSekolah||'-'}</td>
+                    <td>${d.whatsapp||'-'}</td>
+                    <td>${d.jurusan1||'-'}</td>
+                    <td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;">${ek}</td>
+                    <td>${dt}</td>
+                    <td>
+                        <div class="actions">
+                            <a href="https://wa.me/${wa}" target="_blank" class="btn btn-wa btn-xs">💬 WA</a>
+                            <button class="btn btn-danger btn-xs" onclick="del('${d.id}')">🗑</button>
+                        </div>
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+        
+        function filter() {
+            const s = (document.getElementById('searchInput')?.value || '').toLowerCase();
+            const j = document.getElementById('filterJurusan')?.value || '';
+            
+            let f = data;
+            if (s) f = f.filter(d => (d.nama&&d.nama.toLowerCase().includes(s)) || (d.nisn&&d.nisn.includes(s)));
+            if (j) f = f.filter(d => (d.jurusan1&&d.jurusan1.includes(j)) || (d.jurusan2&&d.jurusan2.includes(j)));
+            table(f);
+        }
+        
+        // ============ ACTIONS ============
+        async function del(id) {
+            if (!confirm('⚠️ Hapus permanen data ini?')) return;
+            try {
+                await db.collection('pendaftaran').doc(id).delete();
+                toast('✅ Terhapus', 'success');
+                load();
+            } catch(e) {
+                toast('❌ Gagal: '+e.message, 'error');
+            }
+        }
+        
+        function exportExcel() {
+            if (!data.length) return toast('⚠️ Tidak ada data', 'warning');
+            
+            let csv = '\uFEFFNo,Nama,NISN,Sekolah,WA,Email,Jurusan1,Jurusan2,Ekskul,Tanggal\n';
+            data.forEach((d,i) => {
+                const dt = d.createdAt ? new Date(d.createdAt.toDate()).toLocaleDateString('id-ID') : '-';
+                const ek = (d.ekskul&&Array.isArray(d.ekskul)) ? d.ekskul.join('; ') : '-';
+                csv += `${i+1},"${d.nama||''}","${d.nisn||''}","${d.asalSekolah||''}","${d.whatsapp||''}","${d.email||''}","${d.jurusan1||''}","${d.jurusan2||''}","${ek}","${dt}"\n`;
+            });
+            
+            const b = new Blob([csv],{type:'text/csv;charset=utf-8;'});
+            const u = URL.createObjectURL(b);
+            const a = document.createElement('a');
+            a.href = u;
+            a.download = `data-siswa-${new Date().toISOString().slice(0,10)}.csv`;
+            a.click();
+            URL.revokeObjectURL(u);
+            toast('✅ Exported!', 'success');
+        }
+        
+        // ============ CHARTS ============
+        function charts(jid, eid, tid) {
+            chartJurusan(jid);
+            chartEkskul(eid);
+            chartTrend(tid);
+        }
+        
+        function chartJurusan(id) {
+            const c = document.getElementById(id);
+            if (!c) return;
+            const ctx = c.getContext('2d');
+            c.width = c.parentElement.clientWidth;
+            c.height = 260;
+            
+            const jc = {};
+            data.forEach(d => { if(d.jurusan1) jc[d.jurusan1] = (jc[d.jurusan1]||0)+1; });
+            
+            const lb = Object.keys(jc), vl = Object.values(jc);
+            ctx.clearRect(0,0,c.width,c.height);
+            
+            if (!lb.length) {
+                ctx.fillStyle = '#8892B0';
+                ctx.font = '14px Poppins';
+                ctx.textAlign = 'center';
+                ctx.fillText('Belum ada data', c.width/2, c.height/2);
+                return;
+            }
+            
+            const bw = Math.min(90, (c.width-80)/lb.length);
+            const mx = Math.max(...vl,1);
+            
+            vl.forEach((v,i) => {
+                const bh = (v/mx)*(c.height-80);
+                const x = 40 + i*(bw+15);
+                const y = c.height-40-bh;
+                
+                const g = ctx.createLinearGradient(x,y,x,c.height-40);
+                g.addColorStop(0,'#00F0FF');
+                g.addColorStop(1,'#0066FF');
+                ctx.fillStyle = g;
+                ctx.fillRect(x,y,bw,bh);
+                
+                ctx.fillStyle = '#fff';
+                ctx.font = 'bold 11px Poppins';
+                ctx.textAlign = 'center';
+                ctx.fillText(v, x+bw/2, y-8);
+                
+                ctx.fillStyle = '#8892B0';
+                ctx.font = '9px Poppins';
+                const l = lb[i].length>12 ? lb[i].slice(0,12)+'..' : lb[i];
+                ctx.fillText(l, x+bw/2, c.height-15);
+            });
+        }
+        
+        function chartEkskul(id) {
+            const c = document.getElementById(id);
+            if (!c) return;
+            const ctx = c.getContext('2d');
+            c.width = c.parentElement.clientWidth;
+            c.height = 260;
+            
+            const ec = {};
+            data.forEach(d => {
+                if (d.ekskul && Array.isArray(d.ekskul)) d.ekskul.forEach(e => ec[e] = (ec[e]||0)+1);
+            });
+            
+            const ent = Object.entries(ec).sort((a,b) => b[1]-a[1]);
+            ctx.clearRect(0,0,c.width,c.height);
+            
+            if (!ent.length) {
+                ctx.fillStyle = '#8892B0';
+                ctx.font = '14px Poppins';
+                ctx.textAlign = 'center';
+                ctx.fillText('Belum ada data', c.width/2, c.height/2);
+                return;
+            }
+            
+            const bh = Math.min(22, (c.height-60)/ent.length);
+            const mx = Math.max(...ent.map(e=>e[1]),1);
+            
+            ent.forEach(([l,v],i) => {
+                const bw = (v/mx)*(c.width-180);
+                const y = 20 + i*(bh+4);
+                
+                const g = ctx.createLinearGradient(0,y,bw,y);
+                g.addColorStop(0,'#0066FF');
+                g.addColorStop(1,'#00F0FF');
+                ctx.fillStyle = g;
+                ctx.fillRect(130, y, bw, bh);
+                
+                ctx.fillStyle = '#fff';
+                ctx.font = '10px Poppins';
+                ctx.textAlign = 'right';
+                ctx.fillText(l, 122, y+bh/2+3);
+                
+                ctx.textAlign = 'left';
+                ctx.fillText(v, 135+bw, y+bh/2+3);
+            });
+        }
+        
+        function chartTrend(id) {
+            const c = document.getElementById(id);
+            if (!c) return;
+            const ctx = c.getContext('2d');
+            c.width = c.parentElement.clientWidth;
+            c.height = 260;
+            
+            const dc = {};
+            data.forEach(d => {
+                if (d.createdAt) {
+                    const dt = new Date(d.createdAt.toDate()).toLocaleDateString('id-ID');
+                    dc[dt] = (dc[dt]||0)+1;
+                }
+            });
+            
+            const lb = Object.keys(dc).sort();
+            const vl = lb.map(d=>dc[d]);
+            ctx.clearRect(0,0,c.width,c.height);
+            
+            if (lb.length < 2) {
+                ctx.fillStyle = '#8892B0';
+                ctx.font = '14px Poppins';
+                ctx.textAlign = 'center';
+                ctx.fillText('Data belum cukup', c.width/2, c.height/2);
+                return;
+            }
+            
+            const mx = Math.max(...vl,1);
+            const xs = (c.width-80)/(lb.length-1||1);
+            
+            ctx.beginPath();
+            ctx.strokeStyle = '#00F0FF';
+            ctx.lineWidth = 3;
+            
+            vl.forEach((v,i) => {
+                const x = 40 + i*xs;
+                const y = c.height-40 - (v/mx)*(c.height-80);
+                i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+                
+                ctx.fillStyle = '#00F0FF';
+                ctx.beginPath();
+                ctx.arc(x,y,5,0,Math.PI*2);
+                ctx.fill();
+                
+                ctx.fillStyle = '#fff';
+                ctx.font = '10px Poppins';
+                ctx.textAlign = 'center';
+                ctx.fillText(v, x, y-12);
+                
+                ctx.fillStyle = '#8892B0';
+                ctx.fillText(lb[i], x, c.height-15);
+            });
+            ctx.stroke();
+        }
+        
+        // ============ TOAST ============
+        function toast(msg, type) {
+            const t = document.createElement('div');
+            t.className = 'toast toast-'+type;
+            t.textContent = msg;
+            document.body.appendChild(t);
+            setTimeout(() => {
+                t.style.opacity = '0';
+                t.style.transform = 'translateX(80px)';
+                t.style.transition = 'all 0.3s';
+                setTimeout(() => t.remove(), 300);
+            }, 3000);
+        }
+        
+        // ============ INIT ============
+        if (sessionStorage.getItem('adm') === '1') {
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('app').style.display = 'block';
+            load();
+        }
+    </script>
 </body>
 </html>
