@@ -4,13 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Siswa - SMK TI Bali Global Karangasem</title>
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <a href="index.html" class="nav-logo">
-                <span>SMK TI Bali Global</span>
+                <span>🔷 SMK TI Bali Global</span>
             </a>
             <ul class="nav-menu" id="navMenu">
                 <li><a href="index.html" class="nav-link">Beranda</a></li>
@@ -29,8 +34,8 @@
     <section class="dashboard" style="padding-top: 120px;">
         <div class="dashboard-container">
             <div class="dashboard-header">
-                <h1>Dashboard Siswa</h1>
-                <p style="color: var(--text-gray);">Informasi pendaftaran dan status kamu</p>
+                <h1>📋 Dashboard Siswa</h1>
+                <p style="color: var(--text-gray);">Informasi pendaftaran kamu</p>
             </div>
 
             <div class="dashboard-grid">
@@ -90,24 +95,22 @@
 
                 <!-- Status Card -->
                 <div class="profile-card">
-                    <h3>✅ Status Pendaftaran</h3>
-                    <div style="text-align: center; padding: 2rem 0;">
-                        <span id="dashStatus" class="status-badge status-pending" style="font-size: 1.2rem; padding: 0.5rem 2rem;">
-                            Menunggu Verifikasi
-                        </span>
-                        <p style="color: var(--text-gray); margin-top: 1rem; font-size: 0.9rem;">
-                            Status akan berubah setelah admin memverifikasi data kamu
-                        </p>
+                    <h3>📱 Status Pendaftaran</h3>
+                    <div id="dashStatus" style="text-align: center; padding: 1rem 0;">
+                        <div style="font-size: 1.2rem; color: #00F0FF;">
+                            ⏳ Memuat...
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div style="text-align: center; margin-top: 2rem;">
-                <a href="pilih-jurusan.html" class="btn btn-secondary">Edit Pendaftaran</a>
+                <a href="pilih-jurusan.html" class="btn btn-secondary">✏️ Edit Pendaftaran</a>
             </div>
         </div>
     </section>
 
-    <script type="module" src="js/script.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/script.js"></script>
 </body>
 </html>
