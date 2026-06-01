@@ -1,7 +1,7 @@
 // js/script.js
 // ============================================
-// SCRIPT STABLE - SMK TI Bali Global
-// FOKUS: Dashboard real-time update
+// SMK TI Bali Global Karangasem
+// Sistem Pendaftaran - TANPA VERIFIKASI
 // ============================================
 
 // Toast Notification
@@ -34,7 +34,7 @@ function showToast(message, type = 'info') {
         toast.style.transform = 'translateX(100px)';
         toast.style.transition = 'all 0.3s';
         setTimeout(() => { if (toast.parentNode) toast.remove(); }, 300);
-    }, 3000);
+    }, 4000);
 }
 
 // Navigation
@@ -75,13 +75,13 @@ function initNavigation() {
 async function loadStatistics() {
     try {
         if (typeof db === 'undefined') {
-            console.log('Firebase not ready');
+            console.log('Firebase not ready, retrying...');
+            setTimeout(loadStatistics, 1000);
             return;
         }
         
         const snapshot = await db.collection('pendaftaran').get();
         
-        // Hitung statistik
         const total = snapshot.size;
         const jurusanCount = {};
         const ekskulCount = {};
@@ -94,14 +94,12 @@ async function loadStatistics() {
             }
         });
         
-        // Cari terfavorit
         let topJurusan = '-', maxJ = 0;
         Object.entries(jurusanCount).forEach(([k, v]) => { if (v > maxJ) { maxJ = v; topJurusan = k; } });
         
         let topEkskul = '-', maxE = 0;
         Object.entries(ekskulCount).forEach(([k, v]) => { if (v > maxE) { maxE = v; topEkskul = k; } });
         
-        // Update DOM
         const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
         set('totalPendaftar', total);
         set('jurusanFavorit', topJurusan);
@@ -135,11 +133,11 @@ function initJurusanForm() {
             alasan: getVal('alasan')
         };
         
-        // Validasi simple
-        if (!data.nama || data.nama.length < 3) return showToast('❌ Nama minimal 3 karakter', 'error');
-        if (!data.nisn || !/^\d{10}$/.test(data.nisn)) return showToast('❌ NISN harus 10 digit', 'error');
+        // Validasi
+        if (!data.nama || data.nama.length < 3) return showToast('❌ Nama lengkap minimal 3 karakter', 'error');
+        if (!data.nisn || !/^\d{10}$/.test(data.nisn)) return showToast('❌ NISN harus 10 digit angka', 'error');
         if (!data.asalSekolah) return showToast('❌ Asal sekolah wajib diisi', 'error');
-        if (!data.whatsapp || !/^08\d{8,11}$/.test(data.whatsapp)) return showToast('❌ No WA tidak valid', 'error');
+        if (!data.whatsapp || !/^08\d{8,11}$/.test(data.whatsapp)) return showToast('❌ Nomor WhatsApp tidak valid (08xx)', 'error');
         if (!data.email || !data.email.includes('@')) return showToast('❌ Email tidak valid', 'error');
         if (!data.jurusan1 || !data.jurusan2) return showToast('❌ Pilih kedua jurusan', 'error');
         if (data.jurusan1 === data.jurusan2) return showToast('❌ Jurusan tidak boleh sama', 'error');
@@ -149,33 +147,35 @@ function initJurusanForm() {
         if (btn) { btn.disabled = true; btn.textContent = '⏳ Menyimpan...'; }
         
         try {
-            // Cek NISN
+            // Cek NISN duplicate
             const cek = await db.collection('pendaftaran').where('nisn', '==', data.nisn).get();
             if (!cek.empty) {
                 showToast('❌ NISN sudah terdaftar!', 'error');
-                if (btn) { btn.disabled = false; btn.textContent = '🚀 Daftar & Lanjut'; }
+                if (btn) { btn.disabled = false; btn.textContent = '🚀 Daftar & Lanjut Pilih Ekskul'; }
                 return;
             }
             
-            // Simpan
+            // Simpan ke Firestore
             const docRef = await db.collection('pendaftaran').add({
                 ...data,
                 ekskul: [],
-                status: 'pending',
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             });
             
             // Simpan ke localStorage
             localStorage.setItem('pendaftaranId', docRef.id);
-            localStorage.setItem('siswaData', JSON.stringify({...data, ekskul: [], status: 'pending'}));
+            localStorage.setItem('siswaData', JSON.stringify({...data, ekskul: []}));
             
-            showToast('✅ Pendaftaran berhasil!', 'success');
-            setTimeout(() => window.location.href = 'pilih-ekskul.html', 1000);
+            showToast('✅ Pendaftaran berhasil! Silakan pilih ekstrakurikuler.', 'success');
+            
+            setTimeout(() => {
+                window.location.href = 'pilih-ekskul.html';
+            }, 1500);
             
         } catch (error) {
             console.error('Error:', error);
             showToast('❌ Gagal menyimpan: ' + error.message, 'error');
-            if (btn) { btn.disabled = false; btn.textContent = '🚀 Daftar & Lanjut'; }
+            if (btn) { btn.disabled = false; btn.textContent = '🚀 Daftar & Lanjut Pilih Ekskul'; }
         }
     });
 }
@@ -206,7 +206,7 @@ function initEkskulPage() {
                 selectedEkskul = selectedEkskul.filter(e => e !== name);
             } else {
                 if (selectedEkskul.length >= MAX_EKSKUL) {
-                    return showToast(`⚠️ Maksimal ${MAX_EKSKUL} ekskul`, 'warning');
+                    return showToast(`⚠️ Maksimal ${MAX_EKSKUL} ekstrakurikuler`, 'warning');
                 }
                 this.classList.add('selected');
                 selectedEkskul.push(name);
@@ -227,11 +227,15 @@ function updateEkskulCounter() {
 async function saveEkskul() {
     const id = localStorage.getItem('pendaftaranId');
     if (!id) {
-        showToast('❌ Daftar jurusan dulu!', 'error');
-        return setTimeout(() => window.location.href = 'pilih-jurusan.html', 1000);
+        showToast('❌ Silakan daftar jurusan dulu!', 'error');
+        setTimeout(() => window.location.href = 'pilih-jurusan.html', 1000);
+        return;
     }
     
-    if (selectedEkskul.length === 0) return showToast('⚠️ Pilih minimal 1 ekskul', 'warning');
+    if (selectedEkskul.length === 0) {
+        showToast('⚠️ Pilih minimal 1 ekstrakurikuler', 'warning');
+        return;
+    }
     
     try {
         await db.collection('pendaftaran').doc(id).update({
@@ -239,84 +243,80 @@ async function saveEkskul() {
             updatedAt: firebase.firestore.FieldValue.serverTimestamp()
         });
         
+        // Update localStorage
         const saved = JSON.parse(localStorage.getItem('siswaData') || '{}');
         saved.ekskul = selectedEkskul;
         localStorage.setItem('siswaData', JSON.stringify(saved));
         
-        showToast('✅ Ekskul tersimpan!', 'success');
-        setTimeout(() => window.location.href = 'dashboard-siswa.html', 1000);
+        showToast('✅ Pendaftaran selesai! Mengarahkan ke dashboard...', 'success');
+        
+        setTimeout(() => {
+            window.location.href = 'dashboard-siswa.html';
+        }, 1500);
         
     } catch (error) {
-        showToast('❌ Gagal: ' + error.message, 'error');
+        console.error('Error:', error);
+        showToast('❌ Gagal menyimpan: ' + error.message, 'error');
     }
 }
 
 // ============================================
-// DASHBOARD SISWA - VERSI STABLE
+// DASHBOARD SISWA - TANPA VERIFIKASI
 // ============================================
 async function loadStudentDashboard() {
     console.log('📋 Loading dashboard...');
     
     const id = localStorage.getItem('pendaftaranId');
+    const savedData = localStorage.getItem('siswaData');
     
-    if (!id) {
-        showToast('❌ Silakan daftar dulu', 'error');
-        return setTimeout(() => window.location.href = 'pilih-jurusan.html', 1000);
+    if (!id || !savedData) {
+        showToast('❌ Data tidak ditemukan. Silakan daftar dulu.', 'error');
+        setTimeout(() => window.location.href = 'pilih-jurusan.html', 1500);
+        return;
     }
     
+    const localData = JSON.parse(savedData);
+    
+    // Tampilkan data dari localStorage dulu (cepat)
+    showDashboardData(localData);
+    
+    // Ambil data terbaru dari Firestore
     try {
-        // AMBIL DATA REAL-TIME DARI FIRESTORE
-        const docRef = db.collection('pendaftaran').doc(id);
+        const doc = await db.collection('pendaftaran').doc(id).get();
         
-        // Gunakan onSnapshot untuk real-time update
-        docRef.onSnapshot((doc) => {
-            if (doc.exists) {
-                const data = doc.data();
-                console.log('✅ Data diterima:', data.status);
-                
-                // Update localStorage
-                const saved = JSON.parse(localStorage.getItem('siswaData') || '{}');
-                saved.status = data.status;
-                saved.ekskul = data.ekskul || saved.ekskul || [];
-                localStorage.setItem('siswaData', JSON.stringify(saved));
-                
-                // TAMPILKAN DATA
-                showDashboardData(data);
-                
-            } else {
-                // Fallback ke localStorage
-                const saved = JSON.parse(localStorage.getItem('siswaData') || '{}');
-                showDashboardData(saved);
-            }
-        }, (error) => {
-            console.error('❌ Error:', error);
-            // Fallback ke localStorage
-            const saved = JSON.parse(localStorage.getItem('siswaData') || '{}');
-            showDashboardData(saved);
-        });
+        if (doc.exists) {
+            const firestoreData = doc.data();
+            
+            // Update localStorage
+            const updatedData = { ...localData, ...firestoreData };
+            localStorage.setItem('siswaData', JSON.stringify(updatedData));
+            
+            // Tampilkan data terbaru
+            showDashboardData(updatedData);
+        }
         
     } catch (error) {
-        console.error('❌ Error:', error);
-        const saved = JSON.parse(localStorage.getItem('siswaData') || '{}');
-        showDashboardData(saved);
+        console.error('Error loading from Firestore:', error);
+        // Tetap tampilkan data lokal
     }
 }
 
 function showDashboardData(data) {
-    console.log('🖼️ Menampilkan data:', data.status);
+    console.log('🖼️ Menampilkan dashboard...');
     
-    // Helper
     const set = (id, val) => {
         const el = document.getElementById(id);
         if (el) el.textContent = val || '-';
     };
     
-    // Data diri
+    // Data Diri
     set('dashNama', data.nama);
     set('dashNISN', data.nisn);
     set('dashAsalSekolah', data.asalSekolah);
     set('dashWhatsapp', data.whatsapp);
     set('dashEmail', data.email);
+    
+    // Jurusan
     set('dashJurusan1', data.jurusan1);
     set('dashJurusan2', data.jurusan2);
     
@@ -330,54 +330,94 @@ function showDashboardData(data) {
         }
     }
     
-    // STATUS - INI YANG PENTING
+    // STATUS - INFORMASI PENDAFTARAN
     const statusBadge = document.getElementById('dashStatus');
     if (statusBadge) {
-        if (data.status === 'verified') {
-            statusBadge.textContent = '✅ TERVERIFIKASI';
-            statusBadge.className = 'status-badge status-verified';
-            statusBadge.style.background = '#10B981';
-            statusBadge.style.color = 'white';
-            statusBadge.style.padding = '10px 20px';
-            statusBadge.style.borderRadius = '20px';
-            statusBadge.style.fontWeight = 'bold';
-        } else {
-            statusBadge.textContent = '⏳ MENUNGGU VERIFIKASI';
-            statusBadge.className = 'status-badge status-pending';
-            statusBadge.style.background = '#F59E0B';
-            statusBadge.style.color = 'white';
-            statusBadge.style.padding = '10px 20px';
-            statusBadge.style.borderRadius = '20px';
-            statusBadge.style.fontWeight = 'bold';
-        }
+        statusBadge.innerHTML = `
+            <div style="text-align: center;">
+                <div style="font-size: 1.5rem; margin-bottom: 20px;">
+                    🎉 <strong style="color: #00F0FF;">Pendaftaran Berhasil!</strong>
+                </div>
+                <div style="background: rgba(0,240,255,0.05); 
+                            border: 2px solid rgba(0,240,255,0.2); 
+                            border-radius: 20px; 
+                            padding: 30px 20px; 
+                            margin-top: 15px;">
+                    <p style="color: #CBD5E1; margin-bottom: 20px; line-height: 1.8; font-size: 1rem;">
+                        Terima kasih telah mendaftar di<br>
+                        <strong style="color: #00F0FF; font-size: 1.2rem;">
+                            SMK TI Bali Global Karangasem
+                        </strong>
+                    </p>
+                    
+                    <div style="background: rgba(16, 185, 129, 0.1); 
+                                border: 1px solid rgba(16, 185, 129, 0.3); 
+                                border-radius: 15px; 
+                                padding: 20px; 
+                                margin: 20px 0;">
+                        <p style="color: #CBD5E1; font-size: 0.95rem; line-height: 1.8;">
+                            📱 Kami akan menghubungi anda melalui<br>
+                            <strong style="color: #10B981; font-size: 1.1rem;">
+                                WhatsApp: ${data.whatsapp || '-'}
+                            </strong><br>
+                            untuk informasi selanjutnya.
+                        </p>
+                    </div>
+                    
+                    <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
+                        <p style="color: #8892B0; font-size: 0.9rem; line-height: 1.8;">
+                            ⏰ Estimasi respon: <strong style="color: #F59E0B;">1-3 hari kerja</strong><br>
+                            📞 Info lebih lanjut: <strong style="color: #00F0FF;">0812-3456-7890</strong><br>
+                            📧 Email: <strong style="color: #00F0FF;">info@smktibaliglobal.sch.id</strong>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        `;
     }
     
-    // Tanggal
+    // Tanggal Daftar
     const tglEl = document.getElementById('dashTglDaftar');
     if (tglEl && data.createdAt) {
-        const date = data.createdAt.toDate ? data.createdAt.toDate() : new Date(data.createdAt);
+        let date;
+        if (data.createdAt.toDate) {
+            date = data.createdAt.toDate();
+        } else {
+            date = new Date(data.createdAt);
+        }
         tglEl.textContent = date.toLocaleDateString('id-ID', {
-            day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
         });
     }
 }
 
 // ============================================
-// INIT
+// INITIALIZATION
 // ============================================
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('🚀 App initialized');
+    
     initNavigation();
     
     const page = window.location.pathname.split('/').pop() || 'index.html';
-    console.log('Page:', page);
+    console.log('📄 Page:', page);
     
-    if (page === 'index.html' || page === '') setTimeout(loadStatistics, 1000);
-    else if (page === 'pilih-jurusan.html') initJurusanForm();
-    else if (page === 'pilih-ekskul.html') initEkskulPage();
-    else if (page === 'dashboard-siswa.html') loadStudentDashboard();
+    if (page === 'index.html' || page === '') {
+        setTimeout(loadStatistics, 1000);
+    } else if (page === 'pilih-jurusan.html') {
+        initJurusanForm();
+    } else if (page === 'pilih-ekskul.html') {
+        initEkskulPage();
+    } else if (page === 'dashboard-siswa.html') {
+        loadStudentDashboard();
+    }
 });
 
-// Animation
+// Add animations
 const style = document.createElement('style');
 style.textContent = `
     @keyframes slideIn {
@@ -385,10 +425,14 @@ style.textContent = `
         to { opacity: 1; transform: translateX(0); }
     }
     @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulse {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(0, 240, 255, 0.4); }
+        50% { box-shadow: 0 0 0 15px rgba(0, 240, 255, 0); }
     }
 `;
 document.head.appendChild(style);
 
-console.log('✅ Script ready');
+console.log('✅ Script loaded successfully');
