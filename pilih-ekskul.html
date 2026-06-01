@@ -3,14 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pilih Ekstrakurikuler - SMK TI Bali Global Karangasem</title>
+    <title>Pilih Ekstrakurikuler - SMK TI Bali Global</title>
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <a href="index.html" class="nav-logo">
-                <span>SMK TI Bali Global</span>
+                <span>🔷 SMK TI Bali Global</span>
             </a>
             <ul class="nav-menu" id="navMenu">
                 <li><a href="index.html" class="nav-link">Beranda</a></li>
@@ -30,7 +36,7 @@
         <div class="dashboard-container">
             <div class="dashboard-header" style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
-                    <h1>Pilih Ekstrakurikuler</h1>
+                    <h1>🎯 Pilih Ekstrakurikuler</h1>
                     <p style="color: var(--text-gray);">Pilih maksimal 3 ekstrakurikuler yang kamu minati</p>
                 </div>
                 <div class="glass-card" style="padding: 0.75rem 1.5rem;">
@@ -39,51 +45,46 @@
             </div>
 
             <div class="ekskul-grid">
-                <!-- OSIS -->
                 <div class="ekskul-card" data-ekskul="OSIS">
                     <div class="selected-badge">✓</div>
                     <div class="ekskul-card-header">
                         <div class="ekskul-icon">🏛️</div>
                         <h3>OSIS</h3>
                     </div>
-                    <p>Organisasi Siswa Intra Sekolah - Wadah pengembangan kepemimpinan dan organisasi</p>
+                    <p>Organisasi Siswa Intra Sekolah - Wadah pengembangan kepemimpinan</p>
                     <span class="ekskul-schedule">📅 Jumat, 15:00-17:00</span>
                 </div>
 
-                <!-- Pramuka -->
                 <div class="ekskul-card" data-ekskul="Pramuka">
                     <div class="selected-badge">✓</div>
                     <div class="ekskul-card-header">
                         <div class="ekskul-icon">🏕️</div>
                         <h3>Pramuka</h3>
                     </div>
-                    <p>Melatih kemandirian, kedisiplinan, dan kecintaan alam melalui kegiatan kepramukaan</p>
+                    <p>Melatih kemandirian, kedisiplinan, dan kecintaan alam</p>
                     <span class="ekskul-schedule">📅 Sabtu, 08:00-12:00</span>
                 </div>
 
-                <!-- PMR -->
                 <div class="ekskul-card" data-ekskul="PMR">
                     <div class="selected-badge">✓</div>
                     <div class="ekskul-card-header">
                         <div class="ekskul-icon">🏥</div>
                         <h3>PMR</h3>
                     </div>
-                    <p>Palang Merah Remaja - Belajar pertolongan pertama dan kepedulian sosial</p>
+                    <p>Palang Merah Remaja - Belajar pertolongan pertama</p>
                     <span class="ekskul-schedule">📅 Rabu, 15:00-17:00</span>
                 </div>
 
-                <!-- Basket -->
                 <div class="ekskul-card" data-ekskul="Basket">
                     <div class="selected-badge">✓</div>
                     <div class="ekskul-card-header">
                         <div class="ekskul-icon">🏀</div>
                         <h3>Basket</h3>
                     </div>
-                    <p>Tim bola basket sekolah - Latihan teknik, strategi, dan pertandingan</p>
+                    <p>Tim bola basket sekolah - Latihan teknik dan strategi</p>
                     <span class="ekskul-schedule">📅 Selasa & Kamis, 15:30-17:30</span>
                 </div>
 
-                <!-- Futsal -->
                 <div class="ekskul-card" data-ekskul="Futsal">
                     <div class="selected-badge">✓</div>
                     <div class="ekskul-card-header">
@@ -94,7 +95,6 @@
                     <span class="ekskul-schedule">📅 Senin & Rabu, 15:30-17:30</span>
                 </div>
 
-                <!-- Voli -->
                 <div class="ekskul-card" data-ekskul="Voli">
                     <div class="selected-badge">✓</div>
                     <div class="ekskul-card-header">
@@ -105,7 +105,6 @@
                     <span class="ekskul-schedule">📅 Jumat, 15:30-17:30</span>
                 </div>
 
-                <!-- Tari Bali -->
                 <div class="ekskul-card" data-ekskul="Tari Bali">
                     <div class="selected-badge">✓</div>
                     <div class="ekskul-card-header">
@@ -116,7 +115,6 @@
                     <span class="ekskul-schedule">📅 Sabtu, 10:00-12:00</span>
                 </div>
 
-                <!-- Musik -->
                 <div class="ekskul-card" data-ekskul="Musik">
                     <div class="selected-badge">✓</div>
                     <div class="ekskul-card-header">
@@ -127,7 +125,6 @@
                     <span class="ekskul-schedule">📅 Kamis, 15:00-17:00</span>
                 </div>
 
-                <!-- Coding Club -->
                 <div class="ekskul-card" data-ekskul="Coding Club">
                     <div class="selected-badge">✓</div>
                     <div class="ekskul-card-header">
@@ -138,7 +135,6 @@
                     <span class="ekskul-schedule">📅 Selasa & Kamis, 15:00-17:00</span>
                 </div>
 
-                <!-- Robotik -->
                 <div class="ekskul-card" data-ekskul="Robotik">
                     <div class="selected-badge">✓</div>
                     <div class="ekskul-card-header">
@@ -149,7 +145,6 @@
                     <span class="ekskul-schedule">📅 Rabu & Jumat, 15:00-17:00</span>
                 </div>
 
-                <!-- Multimedia Creative -->
                 <div class="ekskul-card" data-ekskul="Multimedia Creative">
                     <div class="selected-badge">✓</div>
                     <div class="ekskul-card-header">
@@ -160,37 +155,37 @@
                     <span class="ekskul-schedule">📅 Senin, 15:00-17:00</span>
                 </div>
 
-                <!-- English Club -->
                 <div class="ekskul-card" data-ekskul="English Club">
                     <div class="selected-badge">✓</div>
                     <div class="ekskul-card-header">
                         <div class="ekskul-icon">🌍</div>
                         <h3>English Club</h3>
                     </div>
-                    <p>Meningkatkan kemampuan bahasa Inggris melalui aktivitas menyenangkan</p>
+                    <p>Meningkatkan kemampuan bahasa Inggris</p>
                     <span class="ekskul-schedule">📅 Selasa, 15:00-16:30</span>
                 </div>
 
-                <!-- E-Sport -->
                 <div class="ekskul-card" data-ekskul="E-Sport">
                     <div class="selected-badge">✓</div>
                     <div class="ekskul-card-header">
                         <div class="ekskul-icon">🎮</div>
                         <h3>E-Sport</h3>
                     </div>
-                    <p>Tim E-Sport sekolah - Strategi, kerjasama tim, dan kompetisi game</p>
+                    <p>Tim E-Sport sekolah - Strategi dan kompetisi game</p>
                     <span class="ekskul-schedule">📅 Jumat & Sabtu, 15:00-18:00</span>
                 </div>
             </div>
 
             <div style="text-align: center; margin-top: 3rem;">
                 <button id="submitEkskul" class="btn btn-primary btn-lg">
-                    Simpan Pilihan Ekskul
+                    ✅ Simpan Pilihan Ekskul
                 </button>
             </div>
         </div>
     </section>
 
-    <script type="module" src="js/script.js"></script>
+    <!-- Scripts -->
+    <script src="js/firebase-config.js"></script>
+    <script src="js/script.js"></script>
 </body>
 </html>
