@@ -1,1 +1,196 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pilih Ekstrakurikuler - SMK TI Bali Global Karangasem</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <span>SMK TI Bali Global</span>
+            </a>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html" class="nav-link">Beranda</a></li>
+                <li><a href="pilih-jurusan.html" class="nav-link">Pilih Jurusan</a></li>
+                <li><a href="pilih-ekskul.html" class="nav-link active">Pilih Ekskul</a></li>
+                <li><a href="dashboard-siswa.html" class="nav-link">Dashboard</a></li>
+            </ul>
+            <button class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
 
+    <section class="dashboard" style="padding-top: 120px;">
+        <div class="dashboard-container">
+            <div class="dashboard-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1>Pilih Ekstrakurikuler</h1>
+                    <p style="color: var(--text-gray);">Pilih maksimal 3 ekstrakurikuler yang kamu minati</p>
+                </div>
+                <div class="glass-card" style="padding: 0.75rem 1.5rem;">
+                    <span id="ekskulCounter" style="color: var(--primary-neon); font-weight: 600;">0/3 Terpilih</span>
+                </div>
+            </div>
+
+            <div class="ekskul-grid">
+                <!-- OSIS -->
+                <div class="ekskul-card" data-ekskul="OSIS">
+                    <div class="selected-badge">✓</div>
+                    <div class="ekskul-card-header">
+                        <div class="ekskul-icon">🏛️</div>
+                        <h3>OSIS</h3>
+                    </div>
+                    <p>Organisasi Siswa Intra Sekolah - Wadah pengembangan kepemimpinan dan organisasi</p>
+                    <span class="ekskul-schedule">📅 Jumat, 15:00-17:00</span>
+                </div>
+
+                <!-- Pramuka -->
+                <div class="ekskul-card" data-ekskul="Pramuka">
+                    <div class="selected-badge">✓</div>
+                    <div class="ekskul-card-header">
+                        <div class="ekskul-icon">🏕️</div>
+                        <h3>Pramuka</h3>
+                    </div>
+                    <p>Melatih kemandirian, kedisiplinan, dan kecintaan alam melalui kegiatan kepramukaan</p>
+                    <span class="ekskul-schedule">📅 Sabtu, 08:00-12:00</span>
+                </div>
+
+                <!-- PMR -->
+                <div class="ekskul-card" data-ekskul="PMR">
+                    <div class="selected-badge">✓</div>
+                    <div class="ekskul-card-header">
+                        <div class="ekskul-icon">🏥</div>
+                        <h3>PMR</h3>
+                    </div>
+                    <p>Palang Merah Remaja - Belajar pertolongan pertama dan kepedulian sosial</p>
+                    <span class="ekskul-schedule">📅 Rabu, 15:00-17:00</span>
+                </div>
+
+                <!-- Basket -->
+                <div class="ekskul-card" data-ekskul="Basket">
+                    <div class="selected-badge">✓</div>
+                    <div class="ekskul-card-header">
+                        <div class="ekskul-icon">🏀</div>
+                        <h3>Basket</h3>
+                    </div>
+                    <p>Tim bola basket sekolah - Latihan teknik, strategi, dan pertandingan</p>
+                    <span class="ekskul-schedule">📅 Selasa & Kamis, 15:30-17:30</span>
+                </div>
+
+                <!-- Futsal -->
+                <div class="ekskul-card" data-ekskul="Futsal">
+                    <div class="selected-badge">✓</div>
+                    <div class="ekskul-card-header">
+                        <div class="ekskul-icon">⚽</div>
+                        <h3>Futsal</h3>
+                    </div>
+                    <p>Tim futsal sekolah - Pengembangan skill dan kerjasama tim</p>
+                    <span class="ekskul-schedule">📅 Senin & Rabu, 15:30-17:30</span>
+                </div>
+
+                <!-- Voli -->
+                <div class="ekskul-card" data-ekskul="Voli">
+                    <div class="selected-badge">✓</div>
+                    <div class="ekskul-card-header">
+                        <div class="ekskul-icon">🏐</div>
+                        <h3>Voli</h3>
+                    </div>
+                    <p>Tim bola voli - Teknik dasar hingga advanced</p>
+                    <span class="ekskul-schedule">📅 Jumat, 15:30-17:30</span>
+                </div>
+
+                <!-- Tari Bali -->
+                <div class="ekskul-card" data-ekskul="Tari Bali">
+                    <div class="selected-badge">✓</div>
+                    <div class="ekskul-card-header">
+                        <div class="ekskul-icon">💃</div>
+                        <h3>Tari Bali</h3>
+                    </div>
+                    <p>Melestarikan budaya Bali melalui seni tari tradisional</p>
+                    <span class="ekskul-schedule">📅 Sabtu, 10:00-12:00</span>
+                </div>
+
+                <!-- Musik -->
+                <div class="ekskul-card" data-ekskul="Musik">
+                    <div class="selected-badge">✓</div>
+                    <div class="ekskul-card-header">
+                        <div class="ekskul-icon">🎵</div>
+                        <h3>Musik</h3>
+                    </div>
+                    <p>Band sekolah dan pembelajaran alat musik modern</p>
+                    <span class="ekskul-schedule">📅 Kamis, 15:00-17:00</span>
+                </div>
+
+                <!-- Coding Club -->
+                <div class="ekskul-card" data-ekskul="Coding Club">
+                    <div class="selected-badge">✓</div>
+                    <div class="ekskul-card-header">
+                        <div class="ekskul-icon">💻</div>
+                        <h3>Coding Club</h3>
+                    </div>
+                    <p>Club pemrograman - Belajar coding dan pengembangan aplikasi</p>
+                    <span class="ekskul-schedule">📅 Selasa & Kamis, 15:00-17:00</span>
+                </div>
+
+                <!-- Robotik -->
+                <div class="ekskul-card" data-ekskul="Robotik">
+                    <div class="selected-badge">✓</div>
+                    <div class="ekskul-card-header">
+                        <div class="ekskul-icon">🤖</div>
+                        <h3>Robotik</h3>
+                    </div>
+                    <p>Merancang dan membangun robot untuk kompetisi</p>
+                    <span class="ekskul-schedule">📅 Rabu & Jumat, 15:00-17:00</span>
+                </div>
+
+                <!-- Multimedia Creative -->
+                <div class="ekskul-card" data-ekskul="Multimedia Creative">
+                    <div class="selected-badge">✓</div>
+                    <div class="ekskul-card-header">
+                        <div class="ekskul-icon">🎨</div>
+                        <h3>Multimedia Creative</h3>
+                    </div>
+                    <p>Eksplorasi kreativitas digital: desain, foto, dan video</p>
+                    <span class="ekskul-schedule">📅 Senin, 15:00-17:00</span>
+                </div>
+
+                <!-- English Club -->
+                <div class="ekskul-card" data-ekskul="English Club">
+                    <div class="selected-badge">✓</div>
+                    <div class="ekskul-card-header">
+                        <div class="ekskul-icon">🌍</div>
+                        <h3>English Club</h3>
+                    </div>
+                    <p>Meningkatkan kemampuan bahasa Inggris melalui aktivitas menyenangkan</p>
+                    <span class="ekskul-schedule">📅 Selasa, 15:00-16:30</span>
+                </div>
+
+                <!-- E-Sport -->
+                <div class="ekskul-card" data-ekskul="E-Sport">
+                    <div class="selected-badge">✓</div>
+                    <div class="ekskul-card-header">
+                        <div class="ekskul-icon">🎮</div>
+                        <h3>E-Sport</h3>
+                    </div>
+                    <p>Tim E-Sport sekolah - Strategi, kerjasama tim, dan kompetisi game</p>
+                    <span class="ekskul-schedule">📅 Jumat & Sabtu, 15:00-18:00</span>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 3rem;">
+                <button id="submitEkskul" class="btn btn-primary btn-lg">
+                    Simpan Pilihan Ekskul
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <script type="module" src="js/script.js"></script>
+</body>
+</html>
