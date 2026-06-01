@@ -1,15 +1,13 @@
 // js/firebase-config.js
 // ============================================
-// KONFIGURASI FIREBASE
+// KONFIGURASI FIREBASE - TANPA ES MODULES
 // SMK TI Bali Global Karangasem
 // ============================================
 
-// Import Firebase modules
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, where, orderBy, Timestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+// Inisialisasi Firebase menggunakan CDN (sudah include di HTML)
+// Jadi file ini hanya untuk konfigurasi global
 
-// Konfigurasi Firebase Anda
+// Konfigurasi Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyBMdBOguRVd02u79idp4xAoTfjDy-h28EQ",
     authDomain: "osisedimahendra.firebaseapp.com",
@@ -21,13 +19,12 @@ const firebaseConfig = {
 };
 
 // Inisialisasi Firebase
-const app = initializeApp(firebaseConfig);
+firebase.initializeApp(firebaseConfig);
 
 // Inisialisasi Firestore
-const db = getFirestore(app);
+const db = firebase.firestore();
 
-// Inisialisasi Authentication
-const auth = getAuth(app);
+// Inisialisasi Auth
+const auth = firebase.auth();
 
-// Export untuk digunakan di file lain
-export { db, auth, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, where, orderBy, Timestamp, signInWithEmailAndPassword, signOut, onAuthStateChanged };
+console.log('Firebase berhasil diinisialisasi');
