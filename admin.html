@@ -802,6 +802,13 @@
             try {
                 console.log('📥 Loading data...');
                 
+                // Show loading
+                document.getElementById('totalSiswa').textContent = '...';
+                document.getElementById('jurusanFavorit').textContent = '...';
+                document.getElementById('ekskulFavorit').textContent = '...';
+                document.getElementById('verifiedCount').textContent = '...';
+                document.getElementById('pendingCount').textContent = '...';
+                
                 const snapshot = await db.collection('pendaftaran')
                     .orderBy('createdAt', 'desc')
                     .get();
@@ -823,6 +830,13 @@
             } catch (error) {
                 console.error('❌ Error:', error);
                 showToast('❌ Gagal memuat data: ' + error.message, 'error');
+                
+                // Set default values on error
+                document.getElementById('totalSiswa').textContent = '0';
+                document.getElementById('jurusanFavorit').textContent = '-';
+                document.getElementById('ekskulFavorit').textContent = '-';
+                document.getElementById('verifiedCount').textContent = '0';
+                document.getElementById('pendingCount').textContent = '0';
             }
         }
 
@@ -886,6 +900,11 @@
         function renderTable(data) {
             const tbody = document.getElementById('tableBody');
             
+            if (!tbody) {
+                console.error('❌ tableBody not found');
+                return;
+            }
+            
             if (data.length === 0) {
                 tbody.innerHTML = `
                     <tr>
@@ -902,15 +921,45 @@
                     new Date(item.createdAt.toDate()).toLocaleDateString('id-ID', {
                         day: 'numeric',
                         month: 'short',
-                        year: 'numeric'
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
                     }) : '-';
                 
-                const statusBadge = item.status === 'verified' ?
+                const isVerified = item.status === 'verified';
+                
+                const statusBadge = isVerified ?
                     '<span class="badge badge-success">✅ Verified</span>' :
                     '<span class="badge badge-warning">⏳ Pending</span>';
                 
                 const ekskul = (item.ekskul && Array.isArray(item.ekskul)) ?
                     item.ekskul.join(', ') : '-';
+                
+                // Tombol aksi
+                let actionButtons = '';
+                
+                if (!isVerified) {
+                    // Jika belum verified, tampilkan tombol verify
+                    actionButtons += `
+                        <button class="btn btn-success btn-sm" onclick="verifyData('${item.id}')" 
+                            style="margin-right: 5px;" title="Verifikasi siswa ini">
+                            ✅ Verifikasi
+                        </button>
+                    `;
+                } else {
+                    // Jika sudah verified, tampilkan badge
+                    actionButtons += `
+                        <span class="badge badge-success" style="margin-right: 5px;">✅ Terverifikasi</span>
+                    `;
+                }
+                
+                // Tombol hapus selalu ada
+                actionButtons += `
+                    <button class="btn btn-danger btn-sm" onclick="deleteData('${item.id}')" 
+                        title="Hapus data">
+                        🗑️ Hapus
+                    </button>
+                `;
                 
                 return `
                     <tr>
@@ -921,23 +970,19 @@
                         <td>${item.whatsapp || '-'}</td>
                         <td>${item.jurusan1 || '-'}</td>
                         <td>${item.jurusan2 || '-'}</td>
-                        <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis;">${ekskul}</td>
+                        <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${ekskul}">
+                            ${ekskul}
+                        </td>
                         <td>${statusBadge}</td>
                         <td>${date}</td>
-                        <td>
-                            ${item.status !== 'verified' ? 
-                                `<button class="btn btn-success btn-sm" onclick="verifyData('${item.id}')" title="Verifikasi">
-                                    ✅
-                                </button>` : 
-                                ''
-                            }
-                            <button class="btn btn-danger btn-sm" onclick="deleteData('${item.id}')" title="Hapus">
-                                🗑️
-                            </button>
+                        <td style="white-space: nowrap;">
+                            ${actionButtons}
                         </td>
                     </tr>
                 `;
             }).join('');
+            
+            console.log('✅ Table rendered with ' + data.length + ' rows');
         }
 
         // ============================================
@@ -967,62 +1012,182 @@
         }
 
         // ============================================
-        // ACTIONS
+        // VERIFY DATA - DIPERBAIKI
         // ============================================
         async function verifyData(id) {
-            if (!confirm('Verifikasi pendaftaran ini?')) return;
+            console.log('🔍 Verifying data with ID:', id);
+            
+            // Cari data siswa berdasarkan ID
+            const siswa = allData.find(item => item.id === id);
+            const namaSiswa = siswa ? siswa.nama : 'siswa ini';
+            
+            // Konfirmasi dengan nama siswa
+            if (!confirm(`✅ Verifikasi pendaftaran atas nama "${namaSiswa}"?\n\nStatus akan berubah menjadi "Terverifikasi".`)) {
+                console.log('❌ Verification cancelled by user');
+                return;
+            }
             
             try {
+                console.log('📝 Updating Firestore...');
+                
+                // Update status di Firestore
                 await db.collection('pendaftaran').doc(id).update({
                     status: 'verified',
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
                 
-                showToast('✅ Data berhasil diverifikasi!', 'success');
-                loadAllData();
+                console.log('✅ Firestore updated successfully');
+                
+                // Update data lokal
+                const index = allData.findIndex(item => item.id === id);
+                if (index !== -1) {
+                    allData[index].status = 'verified';
+                }
+                
+                // Refresh tampilan
+                updateDashboardStats();
+                renderTable(allData);
+                drawAllCharts();
+                
+                showToast(`✅ Pendaftaran "${namaSiswa}" berhasil diverifikasi!`, 'success');
+                
             } catch (error) {
-                showToast('❌ Gagal verifikasi: ' + error.message, 'error');
+                console.error('❌ Error verifying:', error);
+                
+                let errorMessage = 'Gagal verifikasi data';
+                
+                if (error.code === 'permission-denied') {
+                    errorMessage = '❌ Izin ditolak. Cek Firestore rules.';
+                } else if (error.code === 'not-found') {
+                    errorMessage = '❌ Data tidak ditemukan.';
+                } else {
+                    errorMessage = '❌ ' + error.message;
+                }
+                
+                showToast(errorMessage, 'error');
             }
         }
 
+        // ============================================
+        // DELETE DATA - DIPERBAIKI
+        // ============================================
         async function deleteData(id) {
-            if (!confirm('⚠️ Yakin ingin menghapus data ini?\nTindakan tidak dapat dibatalkan!')) return;
+            console.log('🗑️ Deleting data with ID:', id);
+            
+            // Cari data siswa berdasarkan ID
+            const siswa = allData.find(item => item.id === id);
+            const namaSiswa = siswa ? siswa.nama : 'siswa ini';
+            
+            // Konfirmasi dengan peringatan keras
+            if (!confirm(`⚠️ PERINGATAN!\n\nAnda akan menghapus data pendaftaran atas nama:\n"${namaSiswa}"\n\nTindakan ini TIDAK DAPAT dibatalkan!\n\nLanjutkan?`)) {
+                console.log('❌ Deletion cancelled by user');
+                return;
+            }
+            
+            // Double confirm
+            if (!confirm(`🔴 KONFIRMASI TERAKHIR!\n\nHapus data "${namaSiswa}"?\n\nKlik OK untuk menghapus permanen.`)) {
+                console.log('❌ Deletion cancelled on second confirmation');
+                return;
+            }
             
             try {
+                console.log('📝 Deleting from Firestore...');
+                
+                // Hapus dari Firestore
                 await db.collection('pendaftaran').doc(id).delete();
-                showToast('✅ Data berhasil dihapus!', 'success');
-                loadAllData();
+                
+                console.log('✅ Firestore deleted successfully');
+                
+                // Hapus dari data lokal
+                allData = allData.filter(item => item.id !== id);
+                
+                // Refresh tampilan
+                updateDashboardStats();
+                renderTable(allData);
+                drawAllCharts();
+                
+                showToast(`🗑️ Data "${namaSiswa}" berhasil dihapus!`, 'success');
+                
             } catch (error) {
-                showToast('❌ Gagal menghapus: ' + error.message, 'error');
+                console.error('❌ Error deleting:', error);
+                
+                let errorMessage = 'Gagal menghapus data';
+                
+                if (error.code === 'permission-denied') {
+                    errorMessage = '❌ Izin ditolak. Cek Firestore rules.';
+                } else if (error.code === 'not-found') {
+                    errorMessage = '❌ Data tidak ditemukan.';
+                } else {
+                    errorMessage = '❌ ' + error.message;
+                }
+                
+                showToast(errorMessage, 'error');
             }
         }
 
+        // ============================================
+        // EXPORT EXCEL
+        // ============================================
         function exportToExcel() {
             if (allData.length === 0) {
                 showToast('⚠️ Tidak ada data untuk diexport', 'warning');
                 return;
             }
             
-            let csv = '\uFEFFNo,Nama,NISN,Asal Sekolah,WhatsApp,Email,Jurusan 1,Jurusan 2,Ekskul,Status,Tanggal\n';
+            console.log('📥 Exporting ' + allData.length + ' records to Excel...');
+            
+            // Buat header CSV dengan BOM untuk Excel
+            let csv = '\uFEFF';
+            csv += 'No,Nama,NISN,Asal Sekolah,WhatsApp,Email,Jurusan 1,Jurusan 2,Ekskul,Status,Tanggal Daftar\n';
             
             allData.forEach((item, index) => {
                 const date = item.createdAt ? 
-                    new Date(item.createdAt.toDate()).toLocaleDateString('id-ID') : '-';
+                    new Date(item.createdAt.toDate()).toLocaleDateString('id-ID', {
+                        day: 'numeric',
+                        month: 'long',
+                        year: 'numeric'
+                    }) : '-';
+                
                 const ekskul = (item.ekskul && Array.isArray(item.ekskul)) ? 
                     item.ekskul.join('; ') : '-';
                 
-                csv += `${index + 1},"${item.nama || ''}","${item.nisn || ''}","${item.asalSekolah || ''}","${item.whatsapp || ''}","${item.email || ''}","${item.jurusan1 || ''}","${item.jurusan2 || ''}","${ekskul}","${item.status || 'pending'}","${date}"\n`;
+                const status = item.status === 'verified' ? 'Terverifikasi' : 'Pending';
+                
+                // Escape quotes dan koma
+                const escapeCsv = (str) => {
+                    if (!str) return '';
+                    str = str.toString();
+                    if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+                        str = '"' + str.replace(/"/g, '""') + '"';
+                    }
+                    return str;
+                };
+                
+                csv += `${index + 1},`;
+                csv += `${escapeCsv(item.nama)},`;
+                csv += `${escapeCsv(item.nisn)},`;
+                csv += `${escapeCsv(item.asalSekolah)},`;
+                csv += `${escapeCsv(item.whatsapp)},`;
+                csv += `${escapeCsv(item.email)},`;
+                csv += `${escapeCsv(item.jurusan1)},`;
+                csv += `${escapeCsv(item.jurusan2)},`;
+                csv += `${escapeCsv(ekskul)},`;
+                csv += `${status},`;
+                csv += `${date}\n`;
             });
             
+            // Download file
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `data-siswa-${new Date().toISOString().split('T')[0]}.csv`;
+            a.download = `data-siswa-smkti-${new Date().toISOString().split('T')[0]}.csv`;
+            document.body.appendChild(a);
             a.click();
+            document.body.removeChild(a);
             URL.revokeObjectURL(url);
             
-            showToast('✅ Data berhasil diexport!', 'success');
+            showToast(`✅ ${allData.length} data berhasil diexport ke Excel!`, 'success');
         }
 
         // ============================================
@@ -1058,7 +1223,7 @@
                 ctx.fillStyle = '#8892B0';
                 ctx.font = '14px Poppins';
                 ctx.textAlign = 'center';
-                ctx.fillText('Belum ada data', canvas.width / 2, canvas.height / 2);
+                ctx.fillText('📭 Belum ada data jurusan', canvas.width / 2, canvas.height / 2);
                 return;
             }
             
@@ -1070,18 +1235,29 @@
                 const x = 50 + i * (barWidth + 20);
                 const y = canvas.height - 50 - barHeight;
                 
+                // Gradient
                 const grad = ctx.createLinearGradient(x, y, x, canvas.height - 50);
                 grad.addColorStop(0, '#00F0FF');
                 grad.addColorStop(1, '#0066FF');
                 
+                // Shadow
+                ctx.shadowColor = 'rgba(0, 240, 255, 0.3)';
+                ctx.shadowBlur = 10;
+                
                 ctx.fillStyle = grad;
                 ctx.fillRect(x, y, barWidth, barHeight);
                 
+                // Reset shadow
+                ctx.shadowColor = 'transparent';
+                ctx.shadowBlur = 0;
+                
+                // Value
                 ctx.fillStyle = '#fff';
                 ctx.font = 'bold 12px Poppins';
                 ctx.textAlign = 'center';
                 ctx.fillText(val, x + barWidth / 2, y - 10);
                 
+                // Label
                 ctx.fillStyle = '#8892B0';
                 ctx.font = '10px Poppins';
                 const label = labels[i].length > 15 ? labels[i].substring(0, 15) + '...' : labels[i];
@@ -1114,7 +1290,7 @@
                 ctx.fillStyle = '#8892B0';
                 ctx.font = '14px Poppins';
                 ctx.textAlign = 'center';
-                ctx.fillText('Belum ada data', canvas.width / 2, canvas.height / 2);
+                ctx.fillText('📭 Belum ada data ekskul', canvas.width / 2, canvas.height / 2);
                 return;
             }
             
@@ -1167,39 +1343,63 @@
                 ctx.fillStyle = '#8892B0';
                 ctx.font = '14px Poppins';
                 ctx.textAlign = 'center';
-                ctx.fillText('Data belum cukup', canvas.width / 2, canvas.height / 2);
+                ctx.fillText('📅 Data belum cukup untuk grafik tren', canvas.width / 2, canvas.height / 2);
                 return;
             }
             
             const maxVal = Math.max(...values, 1);
             const xStep = (canvas.width - 100) / (dates.length - 1 || 1);
             
+            // Draw line
             ctx.beginPath();
             ctx.strokeStyle = '#00F0FF';
             ctx.lineWidth = 3;
+            ctx.lineJoin = 'round';
+            
+            // Gradient fill
+            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            gradient.addColorStop(0, 'rgba(0, 240, 255, 0.2)');
+            gradient.addColorStop(1, 'rgba(0, 240, 255, 0)');
             
             values.forEach((val, i) => {
                 const x = 50 + i * xStep;
                 const y = canvas.height - 50 - (val / maxVal) * (canvas.height - 100);
                 
-                if (i === 0) ctx.moveTo(x, y);
-                else ctx.lineTo(x, y);
-                
-                ctx.fillStyle = '#00F0FF';
-                ctx.beginPath();
-                ctx.arc(x, y, 5, 0, Math.PI * 2);
-                ctx.fill();
-                
-                ctx.fillStyle = '#fff';
-                ctx.font = '10px Poppins';
-                ctx.textAlign = 'center';
-                ctx.fillText(val, x, y - 15);
-                
-                ctx.fillStyle = '#8892B0';
-                ctx.fillText(dates[i], x, canvas.height - 20);
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
             });
             
             ctx.stroke();
+            
+            // Draw points
+            values.forEach((val, i) => {
+                const x = 50 + i * xStep;
+                const y = canvas.height - 50 - (val / maxVal) * (canvas.height - 100);
+                
+                ctx.fillStyle = '#00F0FF';
+                ctx.beginPath();
+                ctx.arc(x, y, 6, 0, Math.PI * 2);
+                ctx.fill();
+                
+                ctx.fillStyle = '#0A0E27';
+                ctx.beginPath();
+                ctx.arc(x, y, 3, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Value
+                ctx.fillStyle = '#fff';
+                ctx.font = 'bold 10px Poppins';
+                ctx.textAlign = 'center';
+                ctx.fillText(val, x, y - 15);
+                
+                // Date
+                ctx.fillStyle = '#8892B0';
+                ctx.font = '9px Poppins';
+                ctx.fillText(dates[i], x, canvas.height - 20);
+            });
         }
 
         // ============================================
@@ -1234,6 +1434,7 @@
                 font-size: 0.9rem;
                 animation: slideIn 0.3s ease;
                 box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+                max-width: 450px;
             `;
             
             document.body.appendChild(toast);
@@ -1242,7 +1443,9 @@
                 toast.style.opacity = '0';
                 toast.style.transform = 'translateX(100px)';
                 toast.style.transition = 'all 0.3s';
-                setTimeout(() => toast.remove(), 300);
+                setTimeout(() => {
+                    if (toast.parentNode) toast.remove();
+                }, 300);
             }, 3000);
         }
 
@@ -1263,6 +1466,7 @@
             }
         `;
         document.head.appendChild(style);
+        
+        console.log('✅ Admin script ready');
+        console.log('📋 Features: Login, Dashboard, Data Siswa, Verifikasi, Hapus, Export Excel, Charts');
     </script>
-</body>
-</html>
