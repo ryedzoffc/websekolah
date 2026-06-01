@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SMK TI Bali Global Karangasem - Sekolah Teknologi Terdepan</title>
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -11,15 +17,14 @@
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <a href="index.html" class="nav-logo">
-                <img src="assets/images/logo.png" alt="Logo SMK TI Bali Global" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2245%22 height=%2245%22%3E%3Crect width=%2245%22 height=%2245%22 rx=%2210%22 fill=%22%230066FF%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22white%22 font-size=%2220%22 font-family=%22Arial%22%3ESMK%3C/text%3E%3C/svg%3E'">
-                <span>SMK TI Bali Global</span>
+                <span>🔷 SMK TI Bali Global</span>
             </a>
             
             <ul class="nav-menu" id="navMenu">
-                <li><a href="#home" class="nav-link active">Beranda</a></li>
+                <li><a href="index.html" class="nav-link active">Beranda</a></li>
                 <li><a href="#jurusan" class="nav-link">Jurusan</a></li>
-                <li><a href="#tentang" class="nav-link">Tentang</a></li>
                 <li><a href="pilih-jurusan.html" class="nav-link">Pendaftaran</a></li>
+                <li><a href="dashboard-siswa.html" class="nav-link">Dashboard</a></li>
                 <li><a href="admin.html" class="nav-link">Admin</a></li>
             </ul>
             
@@ -44,12 +49,9 @@
                 <h1>Wujudkan Masa Depan Cemerlang di SMK TI Bali Global</h1>
                 <p>Sekolah teknologi terdepan di Karangasem yang membekali siswa dengan keterampilan digital, kreativitas, dan karakter unggul untuk bersaing di era industri 4.0</p>
                 <div class="hero-buttons">
-                    <a href="pilih-jurusan.html" class="btn btn-primary btn-lg">Daftar Sekarang</a>
+                    <a href="pilih-jurusan.html" class="btn btn-primary btn-lg">Daftar Sekarang 🚀</a>
                     <a href="#jurusan" class="btn btn-secondary btn-lg">Lihat Jurusan</a>
                 </div>
-            </div>
-            <div class="hero-image">
-                <img src="assets/images/hero-student.png" alt="Siswa SMK TI Bali Global" onerror="this.style.display='none'">
             </div>
         </div>
     </section>
@@ -58,15 +60,15 @@
     <section class="stats-section">
         <div class="stats-container">
             <div class="stat-card">
-                <div class="stat-number">0</div>
+                <div class="stat-number" id="totalPendaftar">0</div>
                 <div class="stat-label">Total Pendaftar</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number">-</div>
+                <div class="stat-number" id="jurusanFavorit">-</div>
                 <div class="stat-label">Jurusan Terfavorit</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number">-</div>
+                <div class="stat-number" id="ekskulFavorit">-</div>
                 <div class="stat-label">Ekskul Terfavorit</div>
             </div>
             <div class="stat-card">
@@ -86,9 +88,8 @@
         <div class="jurusan-grid">
             <!-- RPL -->
             <div class="jurusan-card">
-                <img src="assets/images/rpl.jpg" alt="RPL" class="jurusan-card-image" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22350%22 height=%22200%22%3E%3Crect width=%22350%22 height=%22200%22 fill=%22%230066FF%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22white%22 font-size=%2224%22%3ERPL%3C/text%3E%3C/svg%3E'">
                 <div class="jurusan-card-body">
-                    <h3>Rekayasa Perangkat Lunak (RPL)</h3>
+                    <h3>💻 Rekayasa Perangkat Lunak (RPL)</h3>
                     <p>Mempelajari pengembangan software, aplikasi mobile, dan website modern menggunakan teknologi terkini.</p>
                     <div class="jurusan-skills">
                         <span class="skill-tag">HTML/CSS</span>
@@ -112,10 +113,9 @@
             
             <!-- TKJ -->
             <div class="jurusan-card">
-                <img src="assets/images/tkj.jpg" alt="TKJ" class="jurusan-card-image" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22350%22 height=%22200%22%3E%3Crect width=%22350%22 height=%22200%22 fill=%22%2300F0FF%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22white%22 font-size=%2224%22%3ETKJ%3C/text%3E%3C/svg%3E'">
                 <div class="jurusan-card-body">
-                    <h3>Teknik Komputer dan Jaringan (TKJ)</h3>
-                    <p>Fokus pada infrastruktur jaringan, keamanan cyber, dan administrasi server untuk dunia digital.</p>
+                    <h3>🌐 Teknik Komputer dan Jaringan (TKJ)</h3>
+                    <p>Fokus pada infrastruktur jaringan, keamanan cyber, dan administrasi server.</p>
                     <div class="jurusan-skills">
                         <span class="skill-tag">Cisco</span>
                         <span class="skill-tag">Mikrotik</span>
@@ -138,10 +138,9 @@
             
             <!-- Multimedia -->
             <div class="jurusan-card">
-                <img src="assets/images/multimedia.jpg" alt="Multimedia" class="jurusan-card-image" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22350%22 height=%22200%22%3E%3Crect width=%22350%22 height=%22200%22 fill=%22%23001A4D%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22white%22 font-size=%2224%22%3EMULTIMEDIA%3C/text%3E%3C/svg%3E'">
                 <div class="jurusan-card-body">
-                    <h3>Multimedia</h3>
-                    <p>Menggabungkan kreativitas dan teknologi dalam desain grafis, animasi, dan produksi video profesional.</p>
+                    <h3>🎨 Multimedia</h3>
+                    <p>Menggabungkan kreativitas dan teknologi dalam desain grafis, animasi, dan produksi video.</p>
                     <div class="jurusan-skills">
                         <span class="skill-tag">Photoshop</span>
                         <span class="skill-tag">Illustrator</span>
@@ -164,10 +163,9 @@
             
             <!-- AKL -->
             <div class="jurusan-card">
-                <img src="assets/images/akl.jpg" alt="AKL" class="jurusan-card-image" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22350%22 height=%22200%22%3E%3Crect width=%22350%22 height=%22200%22 fill=%22%2310B981%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22white%22 font-size=%2224%22%3EAKL%3C/text%3E%3C/svg%3E'">
                 <div class="jurusan-card-body">
-                    <h3>Akuntansi dan Keuangan Lembaga (AKL)</h3>
-                    <p>Mempelajari akuntansi modern, software keuangan, dan manajemen bisnis untuk karir di dunia korporat.</p>
+                    <h3>📊 Akuntansi dan Keuangan Lembaga (AKL)</h3>
+                    <p>Mempelajari akuntansi modern, software keuangan, dan manajemen bisnis.</p>
                     <div class="jurusan-skills">
                         <span class="skill-tag">MYOB</span>
                         <span class="skill-tag">Excel</span>
@@ -190,16 +188,15 @@
             
             <!-- Perhotelan -->
             <div class="jurusan-card">
-                <img src="assets/images/perhotelan.jpg" alt="Perhotelan" class="jurusan-card-image" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22350%22 height=%22200%22%3E%3Crect width=%22350%22 height=%22200%22 fill=%22%23F59E0B%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22white%22 font-size=%2224%22%3EPERHOTELAN%3C/text%3E%3C/svg%3E'">
                 <div class="jurusan-card-body">
-                    <h3>Perhotelan</h3>
+                    <h3>🏨 Perhotelan</h3>
                     <p>Belajar hospitality management, layanan prima, dan operasional hotel bertaraf internasional.</p>
                     <div class="jurusan-skills">
                         <span class="skill-tag">Hospitality</span>
                         <span class="skill-tag">F&B Service</span>
                         <span class="skill-tag">Housekeeping</span>
                         <span class="skill-tag">Front Office</span>
-                        <span class="skill-tag">Event Management</span>
+                        <span class="skill-tag">Event</span>
                     </div>
                     <div class="jurusan-prospek">
                         <h4>Prospek Kerja:</h4>
@@ -218,11 +215,11 @@
 
     <!-- Footer -->
     <footer style="background: var(--gradient-2); padding: 3rem 0; text-align: center; margin-top: 4rem;">
-        <div class="nav-container">
-            <p style="color: var(--text-gray);">© 2024 SMK TI Bali Global Karangasem. All rights reserved.</p>
-        </div>
+        <p style="color: var(--text-gray);">© 2024 SMK TI Bali Global Karangasem. All rights reserved.</p>
     </footer>
 
-    <script type="module" src="js/script.js"></script>
+    <!-- Scripts -->
+    <script src="js/firebase-config.js"></script>
+    <script src="js/script.js"></script>
 </body>
 </html>
