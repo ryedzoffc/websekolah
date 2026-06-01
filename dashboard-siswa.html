@@ -1,1 +1,113 @@
-dashboard-siswa.html
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Siswa - SMK TI Bali Global Karangasem</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <span>SMK TI Bali Global</span>
+            </a>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html" class="nav-link">Beranda</a></li>
+                <li><a href="pilih-jurusan.html" class="nav-link">Pilih Jurusan</a></li>
+                <li><a href="pilih-ekskul.html" class="nav-link">Pilih Ekskul</a></li>
+                <li><a href="dashboard-siswa.html" class="nav-link active">Dashboard</a></li>
+            </ul>
+            <button class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <section class="dashboard" style="padding-top: 120px;">
+        <div class="dashboard-container">
+            <div class="dashboard-header">
+                <h1>Dashboard Siswa</h1>
+                <p style="color: var(--text-gray);">Informasi pendaftaran dan status kamu</p>
+            </div>
+
+            <div class="dashboard-grid">
+                <!-- Profile Card -->
+                <div class="profile-card">
+                    <h3>📋 Data Diri</h3>
+                    <ul class="info-list">
+                        <li>
+                            <span class="info-label">Nama</span>
+                            <span class="info-value" id="dashNama">-</span>
+                        </li>
+                        <li>
+                            <span class="info-label">NISN</span>
+                            <span class="info-value" id="dashNISN">-</span>
+                        </li>
+                        <li>
+                            <span class="info-label">Asal Sekolah</span>
+                            <span class="info-value" id="dashAsalSekolah">-</span>
+                        </li>
+                        <li>
+                            <span class="info-label">WhatsApp</span>
+                            <span class="info-value" id="dashWhatsapp">-</span>
+                        </li>
+                        <li>
+                            <span class="info-label">Email</span>
+                            <span class="info-value" id="dashEmail">-</span>
+                        </li>
+                        <li>
+                            <span class="info-label">Tanggal Daftar</span>
+                            <span class="info-value" id="dashTglDaftar">-</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Jurusan Card -->
+                <div class="profile-card">
+                    <h3>🎓 Jurusan Dipilih</h3>
+                    <ul class="info-list">
+                        <li>
+                            <span class="info-label">Pilihan 1</span>
+                            <span class="info-value" id="dashJurusan1">-</span>
+                        </li>
+                        <li>
+                            <span class="info-label">Pilihan 2</span>
+                            <span class="info-value" id="dashJurusan2">-</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Ekskul Card -->
+                <div class="profile-card">
+                    <h3>🎯 Ekstrakurikuler</h3>
+                    <ul class="info-list" id="dashEkskul">
+                        <li>Belum memilih ekskul</li>
+                    </ul>
+                </div>
+
+                <!-- Status Card -->
+                <div class="profile-card">
+                    <h3>✅ Status Pendaftaran</h3>
+                    <div style="text-align: center; padding: 2rem 0;">
+                        <span id="dashStatus" class="status-badge status-pending" style="font-size: 1.2rem; padding: 0.5rem 2rem;">
+                            Menunggu Verifikasi
+                        </span>
+                        <p style="color: var(--text-gray); margin-top: 1rem; font-size: 0.9rem;">
+                            Status akan berubah setelah admin memverifikasi data kamu
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 2rem;">
+                <a href="pilih-jurusan.html" class="btn btn-secondary">Edit Pendaftaran</a>
+            </div>
+        </div>
+    </section>
+
+    <script type="module" src="js/script.js"></script>
+</body>
+</html>
