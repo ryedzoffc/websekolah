@@ -975,4 +975,205 @@ function loadJurusanChart() {
     const jurusanCount = {};
     allSiswaData.forEach(siswa => {
         const jurusan = siswa.jurusan1;
-       
+        jurusanCount[jurusan] = (jurusanCount[jurusan] || 0) + 1;
+    });
+    
+    const labels = Object.keys(jurusanCount);
+    const data = Object.values(jurusanCount);
+    
+    // Simple bar chart using canvas
+    const ctx = canvas.getContext('2d');
+    const width = canvas.width;
+    const height = canvas.height;
+    
+    // Clear canvas
+    ctx.clearRect(0, 0, width, height);
+    
+    if (labels.length === 0) return;
+    
+    const barWidth = (width - 100) / labels.length;
+    const maxValue = Math.max(...data);
+    
+    // Draw bars
+    data.forEach((value, index) => {
+        const barHeight = (value / maxValue) * (height - 100);
+        const x = 50 + index * barWidth;
+        const y = height - 50 - barHeight;
+        
+        // Gradient
+        const gradient = ctx.createLinearGradient(x, y, x, height - 50);
+        gradient.addColorStop(0, '#00F0FF');
+        gradient.addColorStop(1, '#0066FF');
+        
+        ctx.fillStyle = gradient;
+        ctx.fillRect(x + 10, y, barWidth - 20, barHeight);
+        
+        // Label
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = '10px Poppins';
+        ctx.textAlign = 'center';
+        ctx.fillText(labels[index], x + barWidth / 2, height - 20);
+        
+        // Value
+        ctx.fillText(value, x + barWidth / 2, y - 10);
+    });
+}
+
+function loadEkskulChart() {
+    const canvas = document.getElementById('ekskulChart');
+    if (!canvas) return;
+    
+    const ekskulCount = {};
+    allSiswaData.forEach(siswa => {
+        (siswa.ekskul || []).forEach(ekskul => {
+            ekskulCount[ekskul] = (ekskulCount[ekskul] || 0) + 1;
+        });
+    });
+    
+    const labels = Object.keys(ekskulCount);
+    const data = Object.values(ekskulCount);
+    
+    const ctx = canvas.getContext('2d');
+    const width = canvas.width;
+    const height = canvas.height;
+    
+    ctx.clearRect(0, 0, width, height);
+    
+    if (labels.length === 0) return;
+    
+    // Draw horizontal bars
+    const barHeight = (height - 100) / labels.length;
+    const maxValue = Math.max(...data);
+    
+    data.forEach((value, index) => {
+        const barWidth = (value / maxValue) * (width - 200);
+        const y = 50 + index * barHeight;
+        
+        const gradient = ctx.createLinearGradient(0, y, barWidth, y);
+        gradient.addColorStop(0, '#0066FF');
+        gradient.addColorStop(1, '#00F0FF');
+        
+        ctx.fillStyle = gradient;
+        ctx.fillRect(150, y + 5, barWidth, barHeight - 10);
+        
+        // Label
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = '11px Poppins';
+        ctx.textAlign = 'right';
+        ctx.fillText(labels[index], 140, y + barHeight / 2 + 4);
+        
+        // Value
+        ctx.textAlign = 'left';
+        ctx.fillText(value, 155 + barWidth, y + barHeight / 2 + 4);
+    });
+}
+
+function loadRegistrationChart() {
+    const canvas = document.getElementById('registrationChart');
+    if (!canvas) return;
+    
+    // Group by date
+    const dateCount = {};
+    allSiswaData.forEach(siswa => {
+        if (siswa.createdAt) {
+            const date = formatDate(siswa.createdAt).split(',')[0];
+            dateCount[date] = (dateCount[date] || 0) + 1;
+        }
+    });
+    
+    const dates = Object.keys(dateCount).sort();
+    const values = dates.map(date => dateCount[date]);
+    
+    const ctx = canvas.getContext('2d');
+    const width = canvas.width;
+    const height = canvas.height;
+    
+    ctx.clearRect(0, 0, width, height);
+    
+    if (dates.length < 2) {
+        ctx.fillStyle = '#8892B0';
+        ctx.font = '14px Poppins';
+        ctx.textAlign = 'center';
+        ctx.fillText('Data belum cukup untuk grafik', width / 2, height / 2);
+        return;
+    }
+    
+    // Draw line chart
+    ctx.beginPath();
+    ctx.strokeStyle = '#00F0FF';
+    ctx.lineWidth = 3;
+    
+    const xStep = (width - 100) / (dates.length - 1);
+    const maxValue = Math.max(...values);
+    
+    values.forEach((value, index) => {
+        const x = 50 + index * xStep;
+        const y = height - 50 - (value / maxValue) * (height - 100);
+        
+        if (index === 0) {
+            ctx.moveTo(x, y);
+        } else {
+            ctx.lineTo(x, y);
+        }
+        
+        // Draw point
+        ctx.fillStyle = '#00F0FF';
+        ctx.beginPath();
+        ctx.arc(x, y, 5, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Label
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = '9px Poppins';
+        ctx.textAlign = 'center';
+        ctx.fillText(dates[index], x, height - 20);
+    });
+    
+    ctx.stroke();
+}
+
+// Utility function
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// ============================================
+// INITIALIZATION
+// ============================================
+document.addEventListener('DOMContentLoaded', () => {
+    // Initialize navigation
+    initNavigation();
+    
+    // Determine current page
+    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+    
+    switch (currentPage) {
+        case 'index.html':
+        case '':
+            loadStatistics();
+            break;
+        case 'pilih-jurusan.html':
+            initJurusanPage();
+            break;
+        case 'pilih-ekskul.html':
+            initEkskulPage();
+            break;
+        case 'dashboard-siswa.html':
+            loadStudentDashboard();
+            break;
+        case 'admin.html':
+            initAdminPage();
+            break;
+    }
+});
+
+// Export functions for global access
+window.showToast = showToast;
